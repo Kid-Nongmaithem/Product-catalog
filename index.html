@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Preference Catalog</title>
+
+  <!-- Google Fonts: Syne (display) + DM Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       CSS VARIABLES — Edit colors/fonts here globally
+    ========================================================= */
+    :root {
+      --bg:        #F5F2EB;
+      --surface:   #FFFFFF;
+      --ink:       #1A1A1A;
+      --muted:     #6B6B6B;
+      --accent:    #D4500A;
+      --accent2:   #2D6A4F;
+      --border:    #E0DAD0;
+      --tag-bg:    #F0EDE6;
+      --selected:  #FFF3EE;
+      --selected-border: #D4500A;
+      --radius:    14px;
+      --shadow:    0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    /* =========================================================
+       RESET & BASE
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 0 100px;
+    }
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+    header {
+      background: var(--ink);
+      color: #fff;
+      padding: 24px 20px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+    header p {
+      font-size: 0.82rem;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* Cart badge in header */
+    .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    #cart-badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: transform 0.2s;
+    }
+    #cart-badge.pop { transform: scale(1.2); }
+
+    /* =========================================================
+       LAYOUT CONTAINER
+    ========================================================= */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* =========================================================
+       SECTION LABELS
+    ========================================================= */
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 28px 0 10px;
+    }
+
+    /* =========================================================
+       EMPLOYEE INFO CARD
+    ========================================================= */
+    .info-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .info-card .full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+    label span.req { color: var(--accent); }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"] {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      background: #FAFAF8;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus { border-color: var(--accent); }
+    input.error { border-color: #e53e3e; background: #fff5f5; }
+    .error-msg { color: #e53e3e; font-size: 0.72rem; margin-top: 3px; display: none; }
+    .error-msg.visible { display: block; }
+
+    /* =========================================================
+       CATEGORY TABS
+    ========================================================= */
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 10px;
+      scrollbar-width: none;
+    }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab {
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--muted);
+    }
+    .cat-tab.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    /* =========================================================
+       PRODUCT GRID
+    ========================================================= */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    @media (min-width: 480px) {
+      .product-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* =========================================================
+       PRODUCT CARD
+    ========================================================= */
+    .product-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      cursor: pointer;
+      position: relative;
+    }
+    .product-card.selected {
+      border-color: var(--selected-border);
+      background: var(--selected);
+      box-shadow: 0 0 0 3px rgba(212,80,10,0.12);
+    }
+    .product-card:active { transform: scale(0.97); }
+
+    /* Checkbox tick overlay */
+    .card-check {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 22px; height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .product-card.selected .card-check {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .card-check svg { display: none; }
+    .product-card.selected .card-check svg { display: block; }
+
+    /* Product image placeholder */
+    .card-img {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      background: var(--tag-bg);
+    }
+
+    /* Card body */
+    .card-body { padding: 10px; }
+    .card-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+    .card-cat {
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: var(--tag-bg);
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .card-price {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent2);
+    }
+
+    /* Quantity controls — shown only when selected */
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      /* hidden by default, shown via JS */
+    }
+    .qty-btn {
+      width: 26px; height: 26px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      color: var(--ink);
+      transition: background 0.1s;
+    }
+    .qty-btn:active { background: var(--tag-bg); }
+    .qty-display {
+      font-size: 0.88rem;
+      font-weight: 700;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* =========================================================
+       WISHLIST SUMMARY
+    ========================================================= */
+    .summary-card {
+      background: var(--ink);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .summary-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+    .summary-empty {
+      font-size: 0.84rem;
+      opacity: 0.45;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .summary-list { list-style: none; }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.84rem;
+    }
+    .summary-item:last-child { border-bottom: none; }
+    .s-name { flex: 1; opacity: 0.85; }
+    .s-qty {
+      background: var(--accent);
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .summary-total {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+    .summary-total strong { font-size: 1.1rem; color: var(--accent); opacity: 1; }
+
+    /* =========================================================
+       SUBMIT BUTTON
+    ========================================================= */
+    .submit-wrap { margin-top: 24px; }
+    #submit-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    #submit-btn:active { transform: scale(0.98); opacity: 0.9; }
+    #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* =========================================================
+       TOAST NOTIFICATION
+    ========================================================= */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 999;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { background: var(--accent2); }
+    #toast.error-toast { background: #c53030; }
+
+    /* =========================================================
+       LOADING SPINNER ON SUBMIT
+    ========================================================= */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================= -->
+<header>
+  <div class="header-top">
+    <div>
+      <h1>Product Catalog</h1>
+      <p>Employee Preference Collection</p>
+    </div>
+    <!-- Live cart badge -->
+    <div id="cart-badge">0 items</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ===========================================================
+       SECTION 1 — EMPLOYEE INFORMATION
+  =========================================================== -->
+  <p class="section-label">① Employee Information</p>
+
+  <div class="info-card">
+    <!-- Employee Name -->
+    <div class="full">
+      <label for="emp-name">Employee Name <span class="req">*</span></label>
+      <input type="text" id="emp-name" placeholder="e.g. Priya Sharma" autocomplete="name" />
+      <div class="error-msg" id="err-name">Name is required.</div>
+    </div>
+
+    <!-- Employee Code -->
+    <div>
+      <label for="emp-code">Employee Code <span class="req">*</span></label>
+      <input type="text" id="emp-code" placeholder="e.g. EMP001" />
+      <div class="error-msg" id="err-code">Code is required.</div>
+    </div>
+
+    <!-- Phone Number -->
+    <div>
+      <label for="emp-phone">Phone Number</label>
+      <input type="tel" id="emp-phone" placeholder="10-digit number" maxlength="15" />
+      <div class="error-msg" id="err-phone">Enter a valid number.</div>
+    </div>
+
+    <!-- PIN Code / Location -->
+    <div class="full">
+      <label for="emp-pin">PIN Code / Location</label>
+      <input type="text" id="emp-pin" placeholder="e.g. 560001" maxlength="10" />
+      <div class="error-msg" id="err-pin">Enter a valid PIN code.</div>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       SECTION 2 — PRODUCT CATALOG
+  =========================================================== -->
+  <p class="section-label">② Product Catalog</p>
+
+  <!-- Category filter tabs -->
+  <div class="cat-tabs" id="cat-tabs">
+    <button class="cat-tab active" data-cat="All">All</button>
+    <!-- More tabs are generated by JS -->
+  </div>
+
+  <!-- Product cards are injected here by JS -->
+  <div class="product-grid" id="product-grid"></div>
+
+  <!-- ===========================================================
+       SECTION 3 — WISHLIST SUMMARY
+  =========================================================== -->
+  <p class="section-label">③ Wishlist Summary</p>
+
+  <div class="summary-card">
+    <div class="summary-title">🛒 Selected Products</div>
+    <div id="summary-empty" class="summary-empty">No products selected yet.</div>
+    <ul class="summary-list" id="summary-list"></ul>
+    <div class="summary-total" id="summary-total" style="display:none">
+      <span>Total items</span>
+      <strong id="total-count">0</strong>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       SECTION 4 — SUBMIT
+  =========================================================== -->
+  <div class="submit-wrap">
+    <button id="submit-btn">Submit Preferences →</button>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Toast notification -->
+<div id="toast"></div>
+
+
+<script>
+/* ================================================================
+   CONFIGURATION
+   ↓ Replace SHEET_URL with your deployed Google Apps Script URL
+================================================================ */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzbr8caqlN4Ki4kWKjKEtvD2pAblMzxS_i_pXZJ1tAB-21Apx1eL8JLC0paYDnK2zhd4Q/exec";
+// ↑ After deploying your Apps Script, paste the URL above.
+
+
+/* ================================================================
+   PRODUCT DATA
+   Add / edit products here. Each product needs:
+     id       — unique string
+     name     — display name
+     category — must match a category you define
+     emoji    — used as image placeholder
+     price    — optional string, e.g. "₹45"
+================================================================ */
+const PRODUCTS = [
+  // GROCERY
+  { id:"g1",  name:"Basmati Rice (5 kg)",  category:"Grocery",        emoji:"🌾", price:"₹320" },
+  { id:"g2",  name:"Whole Wheat Atta (5kg)",category:"Grocery",       emoji:"🍞", price:"₹260" },
+  { id:"g3",  name:"Toor Dal (1 kg)",       category:"Grocery",       emoji:"🫘", price:"₹135" },
+  { id:"g4",  name:"Sunflower Oil (1 L)",   category:"Grocery",       emoji:"🫙", price:"₹145" },
+  { id:"g5",  name:"Sugar (1 kg)",          category:"Grocery",       emoji:"🍬", price:"₹45"  },
+
+  // BEVERAGES
+  { id:"b1",  name:"Green Tea (25 bags)",   category:"Beverages",     emoji:"🍵", price:"₹95"  },
+  { id:"b2",  name:"Filter Coffee Powder",  category:"Beverages",     emoji:"☕", price:"₹180" },
+  { id:"b3",  name:"Mango Juice (1 L)",     category:"Beverages",     emoji:"🥭", price:"₹85"  },
+  { id:"b4",  name:"Coconut Water (500 ml)",category:"Beverages",     emoji:"🥥", price:"₹40"  },
+
+  // PERSONAL CARE
+  { id:"p1",  name:"Shampoo (200 ml)",      category:"Personal Care", emoji:"🧴", price:"₹175" },
+  { id:"p2",  name:"Toothpaste (150 g)",    category:"Personal Care", emoji:"🪥", price:"₹65"  },
+  { id:"p3",  name:"Bath Soap (Pack of 4)", category:"Personal Care", emoji:"🧼", price:"₹120" },
+  { id:"p4",  name:"Moisturiser (100 ml)",  category:"Personal Care", emoji:"💊", price:"₹210" },
+
+  // HOUSEHOLD ITEMS
+  { id:"h1",  name:"Dish Wash Liquid (500ml)",category:"Household",   emoji:"🍶", price:"₹90"  },
+  { id:"h2",  name:"Floor Cleaner (1 L)",    category:"Household",    emoji:"🪣", price:"₹110" },
+  { id:"h3",  name:"Garbage Bags (30 pcs)",  category:"Household",    emoji:"🗑️", price:"₹60"  },
+  { id:"h4",  name:"Mosquito Repellent",     category:"Household",    emoji:"🦟", price:"₹75"  },
+];
+
+/* ================================================================
+   STATE — tracks which products are selected and their quantities
+================================================================ */
+const state = {};  // e.g. { "g1": 2, "b3": 1 }
+let currentCat = "All";
+
+/* ================================================================
+   BUILD CATEGORY TABS DYNAMICALLY
+================================================================ */
+function buildTabs() {
+  const cats = [...new Set(PRODUCTS.map(p => p.category))];
+  const tabsEl = document.getElementById("cat-tabs");
+
+  cats.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.className = "cat-tab";
+    btn.dataset.cat = cat;
+    btn.textContent = cat;
+    tabsEl.appendChild(btn);
+  });
+
+  // Click handler on tabs container (event delegation)
+  tabsEl.addEventListener("click", e => {
+    const tab = e.target.closest(".cat-tab");
+    if (!tab) return;
+
+    // Update active class
+    tabsEl.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    currentCat = tab.dataset.cat;
+    renderGrid();
+  });
+}
+
+/* ================================================================
+   RENDER PRODUCT GRID
+================================================================ */
+function renderGrid() {
+  const grid = document.getElementById("product-grid");
+  grid.innerHTML = "";  // clear existing cards
+
+  // Filter products based on selected category
+  const filtered = currentCat === "All"
+    ? PRODUCTS
+    : PRODUCTS.filter(p => p.category === currentCat);
+
+  filtered.forEach(product => {
+    const isSelected = !!state[product.id];
+    const qty = state[product.id] || 1;
+
+    // Build card HTML
+    const card = document.createElement("div");
+    card.className = "product-card" + (isSelected ? " selected" : "");
+    card.dataset.id = product.id;
+
+    card.innerHTML = `
+      <!-- Checkbox tick -->
+      <div class="card-check">
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+          <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- Image placeholder using emoji -->
+      <div class="card-img">${product.emoji}</div>
+
+      <!-- Card details -->
+      <div class="card-body">
+        <div class="card-name">${product.name}</div>
+        <div class="card-cat">${product.category}</div>
+        ${product.price ? `<div class="card-price">${product.price}</div>` : ""}
+
+        <!-- Quantity controls (visible only when selected) -->
+        <div class="qty-controls" style="display:${isSelected ? 'flex' : 'none'}">
+          <button class="qty-btn" data-action="dec" data-id="${product.id}">−</button>
+          <span class="qty-display" id="qty-${product.id}">${qty}</span>
+          <button class="qty-btn" data-action="inc" data-id="${product.id}">+</button>
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  // Attach event listeners to newly created cards
+  attachCardListeners();
+}
+
+/* ================================================================
+   CARD CLICK EVENTS — select/deselect & quantity
+================================================================ */
+function attachCardListeners() {
+  const grid = document.getElementById("product-grid");
+
+  // Toggle card selection when clicking the card body
+  grid.querySelectorAll(".product-card").forEach(card => {
+    card.addEventListener("click", e => {
+      // If click was on a qty button, don't toggle selection
+      if (e.target.closest(".qty-btn")) return;
+
+      const id = card.dataset.id;
+      if (state[id]) {
+        // Deselect
+        delete state[id];
+        card.classList.remove("selected");
+        card.querySelector(".qty-controls").style.display = "none";
+      } else {
+        // Select with default qty 1
+        state[id] = 1;
+        card.classList.add("selected");
+        card.querySelector(".qty-controls").style.display = "flex";
+      }
+      updateSummary();
+    });
+  });
+
+  // Quantity + / − buttons
+  grid.querySelectorAll(".qty-btn").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.stopPropagation();  // don't bubble to card toggle
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+
+      if (!state[id]) state[id] = 1;
+
+      if (action === "inc") {
+        state[id]++;
+      } else if (action === "dec") {
+        state[id] = Math.max(1, state[id] - 1);
+      }
+
+      // Update displayed qty
+      document.getElementById("qty-" + id).textContent = state[id];
+      updateSummary();
+    });
+  });
+}
+
+/* ================================================================
+   UPDATE WISHLIST SUMMARY
+================================================================ */
+function updateSummary() {
+  const list = document.getElementById("summary-list");
+  const empty = document.getElementById("summary-empty");
+  const totalEl = document.getElementById("total-count");
+  const totalWrap = document.getElementById("summary-total");
+  const badge = document.getElementById("cart-badge");
+
+  const selectedIds = Object.keys(state);
+  list.innerHTML = "";
+
+  if (selectedIds.length === 0) {
+    empty.style.display = "block";
+    totalWrap.style.display = "none";
+  } else {
+    empty.style.display = "none";
+    totalWrap.style.display = "flex";
+
+    let totalQty = 0;
+
+    selectedIds.forEach(id => {
+      const product = PRODUCTS.find(p => p.id === id);
+      if (!product) return;
+
+      const qty = state[id];
+      totalQty += qty;
+
+      const li = document.createElement("li");
+      li.className = "summary-item";
+      li.innerHTML = `
+        <span class="s-name">${product.emoji} ${product.name}</span>
+        <span class="s-qty">×${qty}</span>
+      `;
+      list.appendChild(li);
+    });
+
+    totalEl.textContent = totalQty;
+
+    // Animate badge
+    badge.textContent = totalQty + (totalQty === 1 ? " item" : " items");
+    badge.classList.add("pop");
+    setTimeout(() => badge.classList.remove("pop"), 300);
+  }
+}
+
+/* ================================================================
+   FORM VALIDATION
+================================================================ */
+function validateForm() {
+  let valid = true;
+
+  // Helper: show/hide error
+  function setError(inputId, errId, condition) {
+    const input = document.getElementById(inputId);
+    const err   = document.getElementById(errId);
+    if (condition) {
+      input.classList.add("error");
+      err.classList.add("visible");
+      valid = false;
+    } else {
+      input.classList.remove("error");
+      err.classList.remove("visible");
+    }
+  }
+
+  const name  = document.getElementById("emp-name").value.trim();
+  const code  = document.getElementById("emp-code").value.trim();
+  const phone = document.getElementById("emp-phone").value.trim();
+  const pin   = document.getElementById("emp-pin").value.trim();
+
+  setError("emp-name",  "err-name",  !name);
+  setError("emp-code",  "err-code",  !code);
+  setError("emp-phone", "err-phone", phone && !/^\d{7,15}$/.test(phone));
+  setError("emp-pin",   "err-pin",   pin   && !/^\d{4,10}$/.test(pin));
+
+  return valid;
+}
+
+/* ================================================================
+   SHOW TOAST NOTIFICATION
+================================================================ */
+function showToast(msg, type = "") {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = "show " + type;
+  setTimeout(() => { toast.className = ""; }, 3500);
+}
+
+/* ================================================================
+   SUBMIT — collect data and send to Google Sheets
+================================================================ */
+document.getElementById("submit-btn").addEventListener("click", async () => {
+  // Step 1: Validate form fields
+  if (!validateForm()) {
+    showToast("⚠️ Please fix the errors above.", "error-toast");
+    return;
+  }
+
+  // Step 2: Check at least one product selected
+  const selectedIds = Object.keys(state);
+  if (selectedIds.length === 0) {
+    showToast("🛒 Please select at least one product.", "error-toast");
+    return;
+  }
+
+  // Step 3: Collect employee info
+  const empName  = document.getElementById("emp-name").value.trim();
+  const empCode  = document.getElementById("emp-code").value.trim();
+  const empPhone = document.getElementById("emp-phone").value.trim();
+  const empPin   = document.getElementById("emp-pin").value.trim();
+
+  // Step 4: Build selected products/quantities arrays
+  const productNames = [];
+  const productQtys  = [];
+  let totalItems = 0;
+
+  selectedIds.forEach(id => {
+    const product = PRODUCTS.find(p => p.id === id);
+    if (product) {
+      productNames.push(product.name);
+      productQtys.push(state[id]);
+      totalItems += state[id];
+    }
+  });
+
+  // Step 5: Prepare payload
+  const payload = {
+    employeeName:   empName,
+    employeeCode:   empCode,
+    phoneNumber:    empPhone,
+    pinCode:        empPin,
+    selectedProducts: productNames.join(", "),
+    selectedQtys:     productQtys.join(", "),
+    totalItems:       totalItems,
+  };
+
+  // Step 6: Send to Google Sheets via Apps Script
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting…';
+
+  try {
+    // We use 'no-cors' to avoid CORS issues with Apps Script
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode:   "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    // With no-cors we can't read the response, so assume success
+    showToast("✅ Submitted successfully! Thank you.", "success");
+
+    // Reset form
+    resetForm();
+
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Submission failed. Check your internet.", "error-toast");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "Submit Preferences →";
+  }
+});
+
+/* ================================================================
+   RESET FORM AFTER SUBMISSION
+================================================================ */
+function resetForm() {
+  // Clear employee fields
+  ["emp-name","emp-code","emp-phone","emp-pin"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  // Clear selections
+  for (const key in state) delete state[key];
+
+  // Re-render grid and summary
+  renderGrid();
+  updateSummary();
+}
+
+/* ================================================================
+   INITIALISE APP
+================================================================ */
+buildTabs();
+renderGrid();
+updateSummary();
+</script>
+
+</body>
+</html>
