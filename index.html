@@ -320,15 +320,34 @@
       font-size: 0.76rem;
       font-weight: 700;
     }
+    /* Per-item price shown next to quantity badge */
+    .s-price {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #7fddac;
+      margin-left: 6px;
+      white-space: nowrap;
+    }
     .summary-total {
       margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .summary-total-row {
       display: flex;
       justify-content: space-between;
       font-size: 0.84rem;
       font-weight: 600;
       opacity: 0.7;
     }
-    .summary-total strong { font-size: 1.1rem; color: var(--accent); opacity: 1; }
+    .summary-total-row.grand {
+      opacity: 1;
+      margin-top: 2px;
+    }
+    .summary-total-row strong { font-size: 1.1rem; color: var(--accent); }
 
     /* =========================================================
        SUBMIT BUTTON
@@ -466,8 +485,14 @@
     <div id="summary-empty" class="summary-empty">No products selected yet.</div>
     <ul class="summary-list" id="summary-list"></ul>
     <div class="summary-total" id="summary-total" style="display:none">
-      <span>Total items</span>
-      <strong id="total-count">0</strong>
+      <div class="summary-total-row">
+        <span>Total items</span>
+        <strong id="total-count">0</strong>
+      </div>
+      <div class="summary-total-row grand">
+        <span>Total price</span>
+        <strong id="total-price">₹0</strong>
+      </div>
     </div>
   </div>
 
@@ -503,32 +528,107 @@ const SHEET_URL = "https://script.google.com/macros/s/AKfycbzbr8caqlN4Ki4kWKjKEt
      price    — optional string, e.g. "₹45"
 ================================================================ */
 const PRODUCTS = [
-  // GROCERY
-  { id:"g1",  name:"Basmati Rice (5 kg)",  category:"Grocery",        emoji:"🌾", price:"₹320" },
-  { id:"g2",  name:"Whole Wheat Atta (5kg)",category:"Grocery",       emoji:"🍞", price:"₹260" },
-  { id:"g3",  name:"Toor Dal (1 kg)",       category:"Grocery",       emoji:"🫘", price:"₹135" },
-  { id:"g4",  name:"Sunflower Oil (1 L)",   category:"Grocery",       emoji:"🫙", price:"₹145" },
-  { id:"g5",  name:"Sugar (1 kg)",          category:"Grocery",       emoji:"🍬", price:"₹45"  },
 
-  // BEVERAGES
-  { id:"b1",  name:"Green Tea (25 bags)",   category:"Beverages",     emoji:"🍵", price:"₹95"  },
-  { id:"b2",  name:"Filter Coffee Powder",  category:"Beverages",     emoji:"☕", price:"₹180" },
-  { id:"b3",  name:"Mango Juice (1 L)",     category:"Beverages",     emoji:"🥭", price:"₹85"  },
-  { id:"b4",  name:"Coconut Water (500 ml)",category:"Beverages",     emoji:"🥥", price:"₹40"  },
+  // ── PERSONAL CARE ──────────────────────────────────────────
+  { id:"PC01-01", name:"Neem Soap (75g)",        category:"Personal Care",       emoji:"🧼", price:"₹25" },
+  { id:"PC01-02", name:"Neem Soap (75g)",         category:"Personal Care",       emoji:"🧼", price:"₹30" },
+  { id:"PC01-03", name:"Chandan Soap (75g)",      category:"Personal Care",       emoji:"🧼", price:"₹25" },
+  { id:"PC01-04", name:"Rose Soap (75g)",         category:"Personal Care",       emoji:"🌹", price:"₹30" },
+  { id:"PC01-05", name:"Lemon Soap (75g)",        category:"Personal Care",       emoji:"🍋", price:"₹30" },
+  { id:"PC01-06", name:"Aloe Vera Soap (75g)",    category:"Personal Care",       emoji:"🌿", price:"₹30" },
+  { id:"PC01-07", name:"Neem Soap Premium (75g)", category:"Personal Care",       emoji:"🧼", price:"₹40" },
+  { id:"PC01-08", name:"Lemongrass Soap (75g)",   category:"Personal Care",       emoji:"🌾", price:"₹40" },
+  { id:"PC01-09", name:"Chandan Soap Premium (75g)", category:"Personal Care",    emoji:"🪵", price:"₹40" },
+  { id:"PC01-10", name:"Charcoal Soap (75g)",     category:"Personal Care",       emoji:"🖤", price:"₹40" },
 
-  // PERSONAL CARE
-  { id:"p1",  name:"Shampoo (200 ml)",      category:"Personal Care", emoji:"🧴", price:"₹175" },
-  { id:"p2",  name:"Toothpaste (150 g)",    category:"Personal Care", emoji:"🪥", price:"₹65"  },
-  { id:"p3",  name:"Bath Soap (Pack of 4)", category:"Personal Care", emoji:"🧼", price:"₹120" },
-  { id:"p4",  name:"Moisturiser (100 ml)",  category:"Personal Care", emoji:"💊", price:"₹210" },
+  // ── HOUSEHOLD & CLEANING ───────────────────────────────────
+  { id:"HC01-01", name:"White Phenyl (500ml)",        category:"Household & Cleaning", emoji:"🫧", price:"₹40" },
+  { id:"HC01-02", name:"Green Phenyl (500ml)",        category:"Household & Cleaning", emoji:"🫧", price:"₹50" },
+  { id:"HC02-01", name:"Toilet Cleaner (500ml)",      category:"Household & Cleaning", emoji:"🚽", price:"₹70" },
+  { id:"HC03-01", name:"Floor Cleaner (1 Liter)",     category:"Household & Cleaning", emoji:"🪣", price:"₹50" },
+  { id:"HC03-02", name:"Floor Cleaner (5 Liter)",     category:"Household & Cleaning", emoji:"🪣", price:"₹150" },
+  { id:"HC04-01", name:"Lemon Dishwash Liquid (250ml)", category:"Household & Cleaning", emoji:"🍽️", price:"₹50" },
+  { id:"HC04-02", name:"Lemon Dishwash Tub (450g)",   category:"Household & Cleaning", emoji:"🍽️", price:"₹50" },
+  { id:"HC04-03", name:"Lemon Dishwash Liquid (500ml)", category:"Household & Cleaning", emoji:"🍽️", price:"₹90" },
+  { id:"HC04-04", name:"Lemon Dishwash Tub (250g)",   category:"Household & Cleaning", emoji:"🍽️", price:"₹20" },
+  { id:"HC04-05", name:"Lemon Dishwash (250ml)",      category:"Household & Cleaning", emoji:"🍋", price:"₹35" },
+  { id:"HC05-01", name:"Standard Detergent (1kg)",    category:"Household & Cleaning", emoji:"🧺", price:"₹70" },
+  { id:"HC05-02", name:"Lemon Detergent (2kg)",       category:"Household & Cleaning", emoji:"🧺", price:"₹50" },
+  { id:"HC05-03", name:"Lemon Detergent Premium (2kg)", category:"Household & Cleaning", emoji:"🧺", price:"₹100" },
 
-  // HOUSEHOLD ITEMS
-  { id:"h1",  name:"Dish Wash Liquid (500ml)",category:"Household",   emoji:"🍶", price:"₹90"  },
-  { id:"h2",  name:"Floor Cleaner (1 L)",    category:"Household",    emoji:"🪣", price:"₹110" },
-  { id:"h3",  name:"Garbage Bags (30 pcs)",  category:"Household",    emoji:"🗑️", price:"₹60"  },
-  { id:"h4",  name:"Mosquito Repellent",     category:"Household",    emoji:"🦟", price:"₹75"  },
+  // ── GROCERIES & STAPLES — Pickles ─────────────────────────
+  { id:"GS01-01", name:"Mixed Pickle (50g)",      category:"Groceries & Staples", emoji:"🫙", price:"₹30" },
+  { id:"GS01-02", name:"Mixed Pickle (30g)",      category:"Groceries & Staples", emoji:"🫙", price:"₹10" },
+  { id:"GS01-03", name:"Tamarind Pickle (80g)",   category:"Groceries & Staples", emoji:"🫙", price:"₹30" },
+  { id:"GS01-04", name:"Mix Veg Pickle (80g)",    category:"Groceries & Staples", emoji:"🫙", price:"₹30" },
+  { id:"GS01-05", name:"Chilly Pickle (80g)",     category:"Groceries & Staples", emoji:"🌶️", price:"₹30" },
+  { id:"GS01-06", name:"Lemon Pickle (80g)",      category:"Groceries & Staples", emoji:"🍋", price:"₹30" },
+  { id:"GS01-07", name:"Mushroom Pickle (100g)",  category:"Groceries & Staples", emoji:"🍄", price:"₹70" },
+  { id:"GS01-08", name:"Mushroom Pickle (50g)",   category:"Groceries & Staples", emoji:"🍄", price:"₹35" },
+  { id:"GS01-09", name:"Mango Pickle (100g)",     category:"Groceries & Staples", emoji:"🥭", price:"₹70" },
+  { id:"GS01-10", name:"Mango Pickle (50g)",      category:"Groceries & Staples", emoji:"🥭", price:"₹35" },
+
+  // ── GROCERIES & STAPLES — Atta ────────────────────────────
+  { id:"GS02-01", name:"Maize Atta (2kg)",        category:"Groceries & Staples", emoji:"🌽", price:"₹50" },
+  { id:"GS02-02", name:"Maize Atta (2kg)",        category:"Groceries & Staples", emoji:"🌽", price:"₹30" },
+  { id:"GS02-03", name:"Wheat Atta (500g)",       category:"Groceries & Staples", emoji:"🌾", price:"₹20" },
+  { id:"GS02-04", name:"Bajra Atta (500g)",       category:"Groceries & Staples", emoji:"🌾", price:"₹40" },
+  { id:"GS02-05", name:"Ragi Atta (500g)",        category:"Groceries & Staples", emoji:"🌾", price:"₹60" },
+  { id:"GS02-06", name:"Maize Atta (500g)",       category:"Groceries & Staples", emoji:"🌽", price:"₹40" },
+  { id:"GS02-07", name:"Jwar Atta (500g)",        category:"Groceries & Staples", emoji:"🌾", price:"₹50" },
+  { id:"GS02-08", name:"Bengal Black Chana Besan (500g)", category:"Groceries & Staples", emoji:"🫘", price:"₹60" },
+
+  // ── GROCERIES & STAPLES — Sattu ───────────────────────────
+  { id:"GS03-01", name:"Chana Sattu (500g)",      category:"Groceries & Staples", emoji:"🫘", price:"₹60" },
+  { id:"GS03-02", name:"Jau Sattu (500g)",        category:"Groceries & Staples", emoji:"🌾", price:"₹60" },
+
+  // ── GROCERIES & STAPLES — Spices ──────────────────────────
+  { id:"GS04-01", name:"Haldi (500g)",            category:"Groceries & Staples", emoji:"🟡", price:"₹160" },
+  { id:"GS04-02", name:"Adauri/Bari (200g)",      category:"Groceries & Staples", emoji:"🫙", price:"₹40" },
+  { id:"GS04-03", name:"Sabji Masala (500g)",     category:"Groceries & Staples", emoji:"🌶️", price:"₹140" },
+
+  // ── GROCERIES & STAPLES — Detergent ───────────────────────
+  { id:"GS05-01", name:"Standard Detergent (500g)", category:"Groceries & Staples", emoji:"🧺", price:"₹40" },
+
+  // ── GROCERIES & STAPLES — Rice ────────────────────────────
+  { id:"GS06-01", name:"Indrayani Rice (1kg)",    category:"Groceries & Staples", emoji:"🍚", price:"₹80" },
+  { id:"GS06-02", name:"Jeera Rice (1kg)",        category:"Groceries & Staples", emoji:"🍚", price:"₹80" },
+
+  // ── GROCERIES & STAPLES — Papad ───────────────────────────
+  { id:"GS07-01", name:"Urid Papad (1kg)",        category:"Groceries & Staples", emoji:"🫓", price:"₹400" },
+  { id:"GS07-02", name:"Nagli Papad (20 pcs)",    category:"Groceries & Staples", emoji:"🫓", price:"₹60" },
+  { id:"GS07-03", name:"Rice Papad (20 pcs)",     category:"Groceries & Staples", emoji:"🫓", price:"₹40" },
+  { id:"GS07-04", name:"Urid Papad (500g)",       category:"Groceries & Staples", emoji:"🫓", price:"₹210" },
+  { id:"GS07-05", name:"Urid Papad (200g)",       category:"Groceries & Staples", emoji:"🫓", price:"₹85" },
+
+  // ── GROCERIES & STAPLES — Biscuits ────────────────────────
+  { id:"GS08-01", name:"Nagli Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹200" },
+  { id:"GS08-02", name:"Jawar Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹80" },
+  { id:"GS08-03", name:"Bajra Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹80" },
+  { id:"GS08-04", name:"Wheat Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹80" },
+
+  // ── SNACKS & BRANDED FOODS ────────────────────────────────
+  { id:"SN01-01", name:"Amla Barfi (500g)",       category:"Snacks & Branded Foods", emoji:"🍬", price:"₹80" },
+  { id:"SN02-01", name:"Papita Laddoo (500g)",    category:"Snacks & Branded Foods", emoji:"🍡", price:"₹80" },
+
+  // ── BEVERAGES ─────────────────────────────────────────────
+  { id:"BV01-01", name:"Amla Juice (1 Liter)",       category:"Beverages", emoji:"🍹", price:"" },
+  { id:"BV01-02", name:"Aloe Vera Juice (1 Liter)",  category:"Beverages", emoji:"🥤", price:"" },
+  { id:"BV02-01", name:"Sugarcane Vinegar (1 Liter)",category:"Beverages", emoji:"🍶", price:"" },
+
+  // ── FRUITS & VEGETABLES ───────────────────────────────────
+  { id:"FV01-01", name:"Mango Pickle (70g)",      category:"Fruits & Vegetables", emoji:"🥭", price:"₹30" },
+  { id:"FV01-02", name:"Olive Pickle (80g)",      category:"Fruits & Vegetables", emoji:"🫒", price:"₹30" },
+
+  // ── POOJA & RELIGIOUS ─────────────────────────────────────
+  { id:"PR01-01", name:"Agarbatti (20 pcs)",         category:"Pooja & Religious", emoji:"🪔", price:"₹10" },
+  { id:"PR01-02", name:"Rose Agarbatti (2 sticks)",  category:"Pooja & Religious", emoji:"🌹", price:"₹10" },
+  { id:"PR01-03", name:"Baily Agarbatti (2 sticks)", category:"Pooja & Religious", emoji:"🌸", price:"₹10" },
+  { id:"PR01-04", name:"Chandan Agarbatti (20 sticks)", category:"Pooja & Religious", emoji:"🪵", price:"" },
+  { id:"PR01-05", name:"Jasmine Agarbatti (20 sticks)", category:"Pooja & Religious", emoji:"🌺", price:"" },
+  { id:"PR02-01", name:"Cotton Wicks (7g)",          category:"Pooja & Religious", emoji:"🕯️", price:"" },
+
 ];
-
 /* ================================================================
    STATE — tracks which products are selected and their quantities
 ================================================================ */
@@ -675,6 +775,7 @@ function updateSummary() {
   const list = document.getElementById("summary-list");
   const empty = document.getElementById("summary-empty");
   const totalEl = document.getElementById("total-count");
+  const totalPriceEl = document.getElementById("total-price");
   const totalWrap = document.getElementById("summary-total");
   const badge = document.getElementById("cart-badge");
 
@@ -689,6 +790,8 @@ function updateSummary() {
     totalWrap.style.display = "flex";
 
     let totalQty = 0;
+    let grandTotal = 0;
+    let allPriced = true; // track if every item has a price
 
     selectedIds.forEach(id => {
       const product = PRODUCTS.find(p => p.id === id);
@@ -697,16 +800,37 @@ function updateSummary() {
       const qty = state[id];
       totalQty += qty;
 
+      // Parse price — strips "₹" and converts to number
+      const unitPrice = product.price
+        ? parseFloat(product.price.replace(/[^\d.]/g, ""))
+        : null;
+
+      const lineTotal = unitPrice !== null ? unitPrice * qty : null;
+      if (lineTotal !== null) grandTotal += lineTotal;
+      else allPriced = false;
+
       const li = document.createElement("li");
       li.className = "summary-item";
       li.innerHTML = `
         <span class="s-name">${product.emoji} ${product.name}</span>
         <span class="s-qty">×${qty}</span>
+        ${lineTotal !== null
+          ? `<span class="s-price">₹${lineTotal.toLocaleString('en-IN')}</span>`
+          : ""}
       `;
       list.appendChild(li);
     });
 
     totalEl.textContent = totalQty;
+
+    // Show grand total — note if some items have no price
+    if (allPriced) {
+      totalPriceEl.textContent = "₹" + grandTotal.toLocaleString('en-IN');
+    } else if (grandTotal > 0) {
+      totalPriceEl.textContent = "₹" + grandTotal.toLocaleString('en-IN') + "+";
+    } else {
+      totalPriceEl.textContent = "—";
+    }
 
     // Animate badge
     badge.textContent = totalQty + (totalQty === 1 ? " item" : " items");
@@ -782,18 +906,29 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
   const empPin   = document.getElementById("emp-pin").value.trim();
 
   // Step 4: Build selected products/quantities arrays
-  const productNames = [];
-  const productQtys  = [];
-  let totalItems = 0;
+const productIds   = [];
+const productNames = [];
+const productQtys  = [];
+let totalItems = 0;
+let totalPrice = 0;
 
-  selectedIds.forEach(id => {
-    const product = PRODUCTS.find(p => p.id === id);
-    if (product) {
-      productNames.push(product.name);
-      productQtys.push(state[id]);
-      totalItems += state[id];
-    }
-  });
+selectedIds.forEach(id => {
+  const product = PRODUCTS.find(p => p.id === id);
+  if (!product) return;
+
+  const qty       = state[id];
+  const unitPrice = product.price
+    ? parseFloat(product.price.replace(/[^\d.]/g, ""))
+    : 0;
+  const lineTotal = unitPrice * qty;
+
+  productIds.push(product.id);       // ← product ID
+  productNames.push(product.name);
+  productQtys.push(qty);
+
+  totalItems += qty;
+  totalPrice += lineTotal;
+});
 
   // Step 5: Prepare payload
   const payload = {
@@ -801,6 +936,7 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
     employeeCode:   empCode,
     phoneNumber:    empPhone,
     pinCode:        empPin,
+    productIds:    productIds.join(", "),
     selectedProducts: productNames.join(", "),
     selectedQtys:     productQtys.join(", "),
     totalItems:       totalItems,
