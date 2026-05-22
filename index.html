@@ -2,458 +2,188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Preference Catalog</title>
-
-  <!-- Google Fonts: Syne (display) + DM Sans (body) -->
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-
   <style>
-    /* =========================================================
-       CSS VARIABLES — Edit colors/fonts here globally
-    ========================================================= */
     :root {
-      --bg:        #F5F2EB;
-      --surface:   #FFFFFF;
-      --ink:       #1A1A1A;
-      --muted:     #6B6B6B;
-      --accent:    #D4500A;
-      --accent2:   #2D6A4F;
-      --border:    #E0DAD0;
-      --tag-bg:    #F0EDE6;
-      --selected:  #FFF3EE;
-      --selected-border: #D4500A;
-      --radius:    14px;
-      --shadow:    0 2px 12px rgba(0,0,0,0.07);
+      --bg: #F5F2EB; --surface: #FFFFFF; --ink: #1A1A1A; --muted: #6B6B6B;
+      --accent: #D4500A; --accent2: #2D6A4F; --border: #E0DAD0;
+      --tag-bg: #F0EDE6; --selected: #FFF3EE; --selected-border: #D4500A;
+      --radius: 14px; --shadow: 0 2px 12px rgba(0,0,0,0.07);
     }
-
-    /* =========================================================
-       RESET & BASE
-    ========================================================= */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      padding: 0 0 100px;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; padding: 0 0 100px; }
 
-    /* =========================================================
-       HEADER
-    ========================================================= */
-    header {
-      background: var(--ink);
-      color: #fff;
-      padding: 24px 20px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    header h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
-      letter-spacing: -0.5px;
-    }
-    header p {
-      font-size: 0.82rem;
-      opacity: 0.6;
-      margin-top: 2px;
-    }
-
-    /* Cart badge in header */
+    /* HEADER */
+    header { background: var(--ink); color: #fff; padding: 24px 20px 20px; position: sticky; top: 0; z-index: 100; }
+    header h1 { font-family: 'Syne', sans-serif; font-size: 1.5rem; letter-spacing: -0.5px; }
+    header p { font-size: 0.82rem; opacity: 0.6; margin-top: 2px; }
     .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    #cart-badge {
-      background: var(--accent);
-      color: #fff;
-      border-radius: 999px;
-      padding: 4px 12px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: transform 0.2s;
-    }
+    #cart-badge { background: var(--accent); color: #fff; border-radius: 999px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; transition: transform 0.2s; }
     #cart-badge.pop { transform: scale(1.2); }
+    #price-badge { background: var(--accent2); color: #fff; border-radius: 999px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; transition: transform 0.2s; margin-top: 3px; }
+    #price-badge.pop { transform: scale(1.2); }
 
-    /* =========================================================
-       LAYOUT CONTAINER
-    ========================================================= */
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 0 16px;
-    }
+    /* LAYOUT */
+    .container { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    /* =========================================================
-       SECTION LABELS
-    ========================================================= */
-    .section-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin: 28px 0 10px;
-    }
+    /* SECTION LABELS */
+    .section-label { font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin: 28px 0 10px; }
 
-    /* =========================================================
-       EMPLOYEE INFO CARD
-    ========================================================= */
-    .info-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+    /* INFO CARD */
+    .info-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .info-card .full { grid-column: 1 / -1; }
-
-    label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 5px;
-      letter-spacing: 0.3px;
-    }
+    label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; letter-spacing: 0.3px; }
     label span.req { color: var(--accent); }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="number"] {
-      width: 100%;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.92rem;
-      background: #FAFAF8;
-      color: var(--ink);
-      outline: none;
-      transition: border-color 0.15s;
-    }
+    input[type="text"], input[type="tel"] { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; background: #FAFAF8; color: var(--ink); outline: none; transition: border-color 0.15s; }
     input:focus { border-color: var(--accent); }
     input.error { border-color: #e53e3e; background: #fff5f5; }
     .error-msg { color: #e53e3e; font-size: 0.72rem; margin-top: 3px; display: none; }
     .error-msg.visible { display: block; }
+    textarea:focus { border-color: var(--accent) !important; }
 
-    /* =========================================================
-       CATEGORY TABS
-    ========================================================= */
-    .cat-tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 4px 0 10px;
-      scrollbar-width: none;
-    }
+    /* CATEGORY TABS */
+    .cat-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 10px; scrollbar-width: none; }
     .cat-tabs::-webkit-scrollbar { display: none; }
-    .cat-tab {
-      flex-shrink: 0;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      color: var(--muted);
-    }
-    .cat-tab.active {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: #fff;
-    }
+    .cat-tab { flex-shrink: 0; background: var(--surface); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 16px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--muted); }
+    .cat-tab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
 
-    /* =========================================================
-       PRODUCT GRID
-    ========================================================= */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    @media (min-width: 480px) {
-      .product-grid { grid-template-columns: repeat(3, 1fr); }
-    }
+    /* PRODUCT GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 8px; }
+    @media (min-width: 480px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
 
-    /* =========================================================
-       PRODUCT CARD
-    ========================================================= */
-    .product-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-      cursor: pointer;
-      position: relative;
-    }
-    .product-card.selected {
-      border-color: var(--selected-border);
-      background: var(--selected);
-      box-shadow: 0 0 0 3px rgba(212,80,10,0.12);
-    }
+    /* PRODUCT CARD */
+    .product-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; cursor: pointer; position: relative; }
+    .product-card.selected { border-color: var(--selected-border); background: var(--selected); box-shadow: 0 0 0 3px rgba(212,80,10,0.12); }
     .product-card:active { transform: scale(0.97); }
-
-    /* Checkbox tick overlay */
-    .card-check {
-      position: absolute;
-      top: 8px; right: 8px;
-      width: 22px; height: 22px;
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      background: #fff;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
-    }
-    .product-card.selected .card-check {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
+    .card-check { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 6px; background: #fff; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .product-card.selected .card-check { background: var(--accent); border-color: var(--accent); }
     .card-check svg { display: none; }
     .product-card.selected .card-check svg { display: block; }
-
-    /* Product image placeholder */
-    .card-img {
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.4rem;
-      background: var(--tag-bg);
-    }
-
-    /* Card body */
+    .card-img { height: 90px; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; background: var(--tag-bg); cursor: zoom-in; }
     .card-body { padding: 10px; }
-    .card-name {
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.3;
-      margin-bottom: 3px;
-    }
-    .card-cat {
-      font-size: 0.7rem;
-      color: var(--muted);
-      background: var(--tag-bg);
-      display: inline-block;
-      padding: 2px 7px;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-    .card-price {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--accent2);
-    }
-
-    /* Quantity controls — shown only when selected */
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 8px;
-      /* hidden by default, shown via JS */
-    }
-    .qty-btn {
-      width: 26px; height: 26px;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      background: #fff;
-      font-size: 1rem;
-      line-height: 1;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-      color: var(--ink);
-      transition: background 0.1s;
-    }
+    .card-name { font-size: 0.82rem; font-weight: 600; line-height: 1.3; margin-bottom: 3px; }
+    .card-cat { font-size: 0.7rem; color: var(--muted); background: var(--tag-bg); display: inline-block; padding: 2px 7px; border-radius: 4px; margin-bottom: 5px; }
+    .card-price { font-size: 0.78rem; font-weight: 600; color: var(--accent2); }
+    .moq-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; color: var(--accent2); background: #e8f5ee; border: 1px solid #b7dfc8; border-radius: 4px; padding: 2px 6px; margin-top: 4px; letter-spacing: 0.2px; }
+    .qty-controls { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .qty-btn { width: 26px; height: 26px; border: 1.5px solid var(--border); border-radius: 6px; background: #fff; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--ink); transition: background 0.1s; }
     .qty-btn:active { background: var(--tag-bg); }
-    .qty-display {
-      font-size: 0.88rem;
-      font-weight: 700;
-      min-width: 20px;
-      text-align: center;
-    }
+    .qty-display { font-size: 0.88rem; font-weight: 700; min-width: 20px; text-align: center; }
 
-    /* =========================================================
-       WISHLIST SUMMARY
-    ========================================================= */
-    .summary-card {
-      background: var(--ink);
-      color: #fff;
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-    .summary-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1rem;
-      margin-bottom: 12px;
-      opacity: 0.9;
-    }
-    .summary-empty {
-      font-size: 0.84rem;
-      opacity: 0.45;
-      text-align: center;
-      padding: 10px 0;
-    }
+    /* SUMMARY */
+    .summary-card { background: var(--ink); color: #fff; border-radius: var(--radius); padding: 18px; }
+    .summary-title { font-family: 'Syne', sans-serif; font-size: 1rem; margin-bottom: 12px; opacity: 0.9; }
+    .summary-empty { font-size: 0.84rem; opacity: 0.45; text-align: center; padding: 10px 0; }
     .summary-list { list-style: none; }
-    .summary-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.84rem;
-    }
+    .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.84rem; }
     .summary-item:last-child { border-bottom: none; }
     .s-name { flex: 1; opacity: 0.85; }
-    .s-qty {
-      background: var(--accent);
-      border-radius: 5px;
-      padding: 2px 8px;
-      font-size: 0.76rem;
-      font-weight: 700;
-    }
-    /* Per-item price shown next to quantity badge */
-    .s-price {
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: #7fddac;
-      margin-left: 6px;
-      white-space: nowrap;
-    }
-    .summary-total {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .summary-total-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.84rem;
-      font-weight: 600;
-      opacity: 0.7;
-    }
-    .summary-total-row.grand {
-      opacity: 1;
-      margin-top: 2px;
-    }
+    .s-qty { background: var(--accent); border-radius: 5px; padding: 2px 8px; font-size: 0.76rem; font-weight: 700; }
+    .s-price { font-size: 0.76rem; font-weight: 600; color: #7fddac; margin-left: 6px; white-space: nowrap; }
+    .summary-total { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 5px; }
+    .summary-total-row { display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; opacity: 0.7; }
+    .summary-total-row.grand { opacity: 1; margin-top: 2px; }
     .summary-total-row strong { font-size: 1.1rem; color: var(--accent); }
 
-    /* =========================================================
-       SUBMIT BUTTON
-    ========================================================= */
+    /* BUTTONS */
     .submit-wrap { margin-top: 24px; }
-    #submit-btn {
-      width: 100%;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      padding: 16px;
-      font-family: 'Syne', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.3px;
-      transition: opacity 0.2s, transform 0.15s;
-    }
+    #continue-btn { width: 100%; background: var(--accent2); color: #fff; border: none; border-radius: var(--radius); padding: 16px; font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.2s, transform 0.15s; }
+    #continue-btn:active { transform: scale(0.98); opacity: 0.9; }
+    #submit-btn { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 16px; font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.2s, transform 0.15s; }
     #submit-btn:active { transform: scale(0.98); opacity: 0.9; }
     #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* =========================================================
-       TOAST NOTIFICATION
-    ========================================================= */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--ink);
-      color: #fff;
-      padding: 12px 22px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      z-index: 999;
-      transition: transform 0.3s ease;
-      white-space: nowrap;
-    }
+    /* BACK BUTTON */
+    .back-btn { display: flex; align-items: center; gap: 6px; background: none; border: 1.5px solid var(--border); border-radius: 999px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 600; color: var(--muted); cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
+    .back-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* RECAP CARD */
+    .recap-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px; margin-bottom: 4px; }
+    .recap-title { font-size: 0.75rem; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .recap-row { display: flex; justify-content: space-between; font-size: 0.83rem; padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .recap-row:last-child { border-bottom: none; }
+    .recap-row span:first-child { color: var(--muted); }
+    .recap-row span:last-child { font-weight: 600; }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 999px; font-size: 0.85rem; font-weight: 500; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; }
     #toast.show { transform: translateX(-50%) translateY(0); }
     #toast.success { background: var(--accent2); }
     #toast.error-toast { background: #c53030; }
 
-    /* =========================================================
-       LOADING SPINNER ON SUBMIT
-    ========================================================= */
-    .spinner {
-      display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
+    /* SPINNER */
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; padding-bottom: 32px; }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-img { width: 100%; height: 220px; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; font-size: 5rem; border-radius: 20px 20px 0 0; overflow: hidden; position: relative; }
+    .modal-img img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 999px; background: rgba(0,0,0,0.4); border: none; color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.15s; }
+    .modal-close:hover { background: rgba(0,0,0,0.7); }
+    .modal-body { padding: 18px 20px 0; }
+    .modal-cat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .modal-cat { font-size: 0.72rem; color: var(--muted); background: var(--tag-bg); padding: 3px 9px; border-radius: 4px; font-weight: 600; }
+    .modal-moq { font-size: 0.72rem; font-weight: 700; color: var(--accent2); background: #e8f5ee; border: 1px solid #b7dfc8; padding: 3px 9px; border-radius: 4px; }
+    .modal-name { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+    .modal-price-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .modal-price { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+    .modal-seller { font-size: 0.78rem; color: var(--muted); }
+    .modal-seller span { color: var(--ink); font-weight: 600; }
+    .modal-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .modal-section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .modal-description { font-size: 0.88rem; line-height: 1.6; color: var(--ink); margin-bottom: 14px; }
+    .modal-details { font-size: 0.82rem; color: var(--muted); background: var(--tag-bg); border-radius: 8px; padding: 10px 14px; line-height: 1.7; margin-bottom: 20px; }
+    .modal-wishlist-btn { width: 100%; padding: 14px; border-radius: var(--radius); border: none; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .modal-wishlist-btn.add { background: var(--accent); color: #fff; }
+    .modal-wishlist-btn.remove { background: var(--tag-bg); color: var(--accent); border: 2px solid var(--accent); }
+    .modal-wishlist-btn:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
 
-<!-- ============================================================
-     HEADER
-============================================================= -->
+<!-- HEADER -->
 <header>
   <div class="header-top">
     <div>
       <h1>Product Catalog</h1>
       <p>Employee Preference Collection</p>
     </div>
-    <!-- Live cart badge -->
-    <div id="cart-badge">0 items</div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;">
+      <div id="cart-badge">0 items</div>
+      <div id="price-badge">0 Lp</div>
+    </div>
   </div>
 </header>
 
-<div class="container">
+<!-- PAGE 1 -->
+<div class="container page active" id="page1">
 
-  <!-- ===========================================================
-       SECTION 1 — EMPLOYEE INFORMATION
-  =========================================================== -->
   <p class="section-label">① Employee Information</p>
-
   <div class="info-card">
-    <!-- Employee Name -->
     <div class="full">
       <label for="emp-name">Employee Name <span class="req">*</span></label>
       <input type="text" id="emp-name" placeholder="e.g. Priya Sharma" autocomplete="name" />
       <div class="error-msg" id="err-name">Name is required.</div>
     </div>
-
-    <!-- Employee Code -->
     <div>
       <label for="emp-code">Employee Code <span class="req">*</span></label>
       <input type="text" id="emp-code" placeholder="e.g. EMP001" />
       <div class="error-msg" id="err-code">Code is required.</div>
     </div>
-
-    <!-- Phone Number -->
     <div>
       <label for="emp-phone">Phone Number</label>
       <input type="tel" id="emp-phone" placeholder="10-digit number" maxlength="15" />
       <div class="error-msg" id="err-phone">Enter a valid number.</div>
     </div>
-
-    <!-- PIN Code / Location -->
     <div class="full">
       <label for="emp-pin">PIN Code / Location</label>
       <input type="text" id="emp-pin" placeholder="e.g. 560001" maxlength="10" />
@@ -461,25 +191,13 @@
     </div>
   </div>
 
-  <!-- ===========================================================
-       SECTION 2 — PRODUCT CATALOG
-  =========================================================== -->
   <p class="section-label">② Product Catalog</p>
-
-  <!-- Category filter tabs -->
   <div class="cat-tabs" id="cat-tabs">
     <button class="cat-tab active" data-cat="All">All</button>
-    <!-- More tabs are generated by JS -->
   </div>
-
-  <!-- Product cards are injected here by JS -->
   <div class="product-grid" id="product-grid"></div>
 
-  <!-- ===========================================================
-       SECTION 3 — WISHLIST SUMMARY
-  =========================================================== -->
   <p class="section-label">③ Wishlist Summary</p>
-
   <div class="summary-card">
     <div class="summary-title">🛒 Selected Products</div>
     <div id="summary-empty" class="summary-empty">No products selected yet.</div>
@@ -491,157 +209,165 @@
       </div>
       <div class="summary-total-row grand">
         <span>Total price</span>
-        <strong id="total-price">₹0</strong>
+        <strong id="total-price">0 Lp</strong>
       </div>
     </div>
   </div>
 
-  <!-- ===========================================================
-       SECTION 4 — SUBMIT
-  =========================================================== -->
+  <div class="submit-wrap">
+    <button id="continue-btn">Continue to Feedback →</button>
+  </div>
+
+</div><!-- /page1 -->
+
+<!-- PAGE 2 -->
+<div class="container page" id="page2">
+
+  <button class="back-btn" id="back-btn">← Back to Summary</button>
+
+  <p class="section-label">④ Order Recap</p>
+  <div class="recap-card">
+    <div class="recap-title">Your Selection</div>
+    <div class="recap-row"><span>Employee</span><span id="recap-name">—</span></div>
+    <div class="recap-row"><span>Employee Code</span><span id="recap-code">—</span></div>
+    <div class="recap-row"><span>Total Items</span><span id="recap-items">—</span></div>
+    <div class="recap-row"><span>Total Price</span><span id="recap-price">—</span></div>
+    <div class="recap-row"><span>Products</span><span id="recap-products" style="text-align:right;max-width:60%;">—</span></div>
+  </div>
+
+  <p class="section-label">⑤ Feedback & Suggestions</p>
+  <div class="info-card">
+    <div class="full">
+      <label for="emp-feedback">Any feedback, suggestions or special requests?</label>
+      <textarea id="emp-feedback" placeholder="e.g. Please add more organic products..." rows="5" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:0.92rem;background:#FAFAF8;color:var(--ink);outline:none;resize:vertical;transition:border-color 0.15s;line-height:1.5;"></textarea>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">Optional — share anything on your mind</div>
+    </div>
+  </div>
+
   <div class="submit-wrap">
     <button id="submit-btn">Submit Preferences →</button>
   </div>
 
-</div><!-- /container -->
+</div><!-- /page2 -->
 
-<!-- Toast notification -->
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-img" id="modal-img">
+      <button class="modal-close" id="modal-close">✕</button>
+      <span id="modal-emoji"></span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cat-row">
+        <div class="modal-cat" id="modal-cat"></div>
+        <div class="modal-moq" id="modal-moq" style="display:none"></div>
+      </div>
+      <div class="modal-name" id="modal-name"></div>
+      <div class="modal-price-row">
+        <div class="modal-price" id="modal-price"></div>
+        <div class="modal-seller">Seller: <span id="modal-seller"></span></div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-section-title">Description</div>
+      <div class="modal-description" id="modal-description"></div>
+      <div class="modal-section-title">Product Details</div>
+      <div class="modal-details" id="modal-details"></div>
+      <div class="modal-divider"></div>
+      <button class="modal-wishlist-btn add" id="modal-wishlist-btn">+ Add to Wishlist</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
 <div id="toast"></div>
 
-
 <script>
-/* ================================================================
-   CONFIGURATION
-   ↓ Replace SHEET_URL with your deployed Google Apps Script URL
-================================================================ */
+/* ── CONFIG ── */
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbzbr8caqlN4Ki4kWKjKEtvD2pAblMzxS_i_pXZJ1tAB-21Apx1eL8JLC0paYDnK2zhd4Q/exec";
-// ↑ After deploying your Apps Script, paste the URL above.
 
-
-/* ================================================================
-   PRODUCT DATA
-   Add / edit products here. Each product needs:
-     id       — unique string
-     name     — display name
-     category — must match a category you define
-     emoji    — used as image placeholder
-     price    — optional string, e.g. "₹45"
-================================================================ */
+/* ── PRODUCTS ── */
 const PRODUCTS = [
-
-  // ── PERSONAL CARE ──────────────────────────────────────────
-  { id:"PC01-01", name:"Neem Soap (75g)",        category:"Personal Care",       emoji:"🧼", price:"₹25" },
-  { id:"PC01-02", name:"Neem Soap (75g)",         category:"Personal Care",       emoji:"🧼", price:"₹30" },
-  { id:"PC01-03", name:"Chandan Soap (75g)",      category:"Personal Care",       emoji:"🧼", price:"₹25" },
-  { id:"PC01-04", name:"Rose Soap (75g)",         category:"Personal Care",       emoji:"🌹", price:"₹30" },
-  { id:"PC01-05", name:"Lemon Soap (75g)",        category:"Personal Care",       emoji:"🍋", price:"₹30" },
-  { id:"PC01-06", name:"Aloe Vera Soap (75g)",    category:"Personal Care",       emoji:"🌿", price:"₹30" },
-  { id:"PC01-07", name:"Neem Soap Premium (75g)", category:"Personal Care",       emoji:"🧼", price:"₹40" },
-  { id:"PC01-08", name:"Lemongrass Soap (75g)",   category:"Personal Care",       emoji:"🌾", price:"₹40" },
-  { id:"PC01-09", name:"Chandan Soap Premium (75g)", category:"Personal Care",    emoji:"🪵", price:"₹40" },
-  { id:"PC01-10", name:"Charcoal Soap (75g)",     category:"Personal Care",       emoji:"🖤", price:"₹40" },
-
-  // ── HOUSEHOLD & CLEANING ───────────────────────────────────
-  { id:"HC01-01", name:"White Phenyl (500ml)",        category:"Household & Cleaning", emoji:"🫧", price:"₹40" },
-  { id:"HC01-02", name:"Green Phenyl (500ml)",        category:"Household & Cleaning", emoji:"🫧", price:"₹50" },
-  { id:"HC02-01", name:"Toilet Cleaner (500ml)",      category:"Household & Cleaning", emoji:"🚽", price:"₹70" },
-  { id:"HC03-01", name:"Floor Cleaner (1 Liter)",     category:"Household & Cleaning", emoji:"🪣", price:"₹50" },
-  { id:"HC03-02", name:"Floor Cleaner (5 Liter)",     category:"Household & Cleaning", emoji:"🪣", price:"₹150" },
-  { id:"HC04-01", name:"Lemon Dishwash Liquid (250ml)", category:"Household & Cleaning", emoji:"🍽️", price:"₹50" },
-  { id:"HC04-02", name:"Lemon Dishwash Tub (450g)",   category:"Household & Cleaning", emoji:"🍽️", price:"₹50" },
-  { id:"HC04-03", name:"Lemon Dishwash Liquid (500ml)", category:"Household & Cleaning", emoji:"🍽️", price:"₹90" },
-  { id:"HC04-04", name:"Lemon Dishwash Tub (250g)",   category:"Household & Cleaning", emoji:"🍽️", price:"₹20" },
-  { id:"HC04-05", name:"Lemon Dishwash (250ml)",      category:"Household & Cleaning", emoji:"🍋", price:"₹35" },
-  { id:"HC05-01", name:"Standard Detergent (1kg)",    category:"Household & Cleaning", emoji:"🧺", price:"₹70" },
-  { id:"HC05-02", name:"Lemon Detergent (2kg)",       category:"Household & Cleaning", emoji:"🧺", price:"₹50" },
-  { id:"HC05-03", name:"Lemon Detergent Premium (2kg)", category:"Household & Cleaning", emoji:"🧺", price:"₹100" },
-
-  // ── GROCERIES & STAPLES — Pickles ─────────────────────────
-  { id:"GS01-01", name:"Mixed Pickle (50g)",      category:"Groceries & Staples", emoji:"🫙", price:"₹30" },
-  { id:"GS01-02", name:"Mixed Pickle (30g)",      category:"Groceries & Staples", emoji:"🫙", price:"₹10" },
-  { id:"GS01-03", name:"Tamarind Pickle (80g)",   category:"Groceries & Staples", emoji:"🫙", price:"₹30" },
-  { id:"GS01-04", name:"Mix Veg Pickle (80g)",    category:"Groceries & Staples", emoji:"🫙", price:"₹30" },
-  { id:"GS01-05", name:"Chilly Pickle (80g)",     category:"Groceries & Staples", emoji:"🌶️", price:"₹30" },
-  { id:"GS01-06", name:"Lemon Pickle (80g)",      category:"Groceries & Staples", emoji:"🍋", price:"₹30" },
-  { id:"GS01-07", name:"Mushroom Pickle (100g)",  category:"Groceries & Staples", emoji:"🍄", price:"₹70" },
-  { id:"GS01-08", name:"Mushroom Pickle (50g)",   category:"Groceries & Staples", emoji:"🍄", price:"₹35" },
-  { id:"GS01-09", name:"Mango Pickle (100g)",     category:"Groceries & Staples", emoji:"🥭", price:"₹70" },
-  { id:"GS01-10", name:"Mango Pickle (50g)",      category:"Groceries & Staples", emoji:"🥭", price:"₹35" },
-
-  // ── GROCERIES & STAPLES — Atta ────────────────────────────
-  { id:"GS02-01", name:"Maize Atta (2kg)",        category:"Groceries & Staples", emoji:"🌽", price:"₹50" },
-  { id:"GS02-02", name:"Maize Atta (2kg)",        category:"Groceries & Staples", emoji:"🌽", price:"₹30" },
-  { id:"GS02-03", name:"Wheat Atta (500g)",       category:"Groceries & Staples", emoji:"🌾", price:"₹20" },
-  { id:"GS02-04", name:"Bajra Atta (500g)",       category:"Groceries & Staples", emoji:"🌾", price:"₹40" },
-  { id:"GS02-05", name:"Ragi Atta (500g)",        category:"Groceries & Staples", emoji:"🌾", price:"₹60" },
-  { id:"GS02-06", name:"Maize Atta (500g)",       category:"Groceries & Staples", emoji:"🌽", price:"₹40" },
-  { id:"GS02-07", name:"Jwar Atta (500g)",        category:"Groceries & Staples", emoji:"🌾", price:"₹50" },
-  { id:"GS02-08", name:"Bengal Black Chana Besan (500g)", category:"Groceries & Staples", emoji:"🫘", price:"₹60" },
-
-  // ── GROCERIES & STAPLES — Sattu ───────────────────────────
-  { id:"GS03-01", name:"Chana Sattu (500g)",      category:"Groceries & Staples", emoji:"🫘", price:"₹60" },
-  { id:"GS03-02", name:"Jau Sattu (500g)",        category:"Groceries & Staples", emoji:"🌾", price:"₹60" },
-
-  // ── GROCERIES & STAPLES — Spices ──────────────────────────
-  { id:"GS04-01", name:"Haldi (500g)",            category:"Groceries & Staples", emoji:"🟡", price:"₹160" },
-  { id:"GS04-02", name:"Adauri/Bari (200g)",      category:"Groceries & Staples", emoji:"🫙", price:"₹40" },
-  { id:"GS04-03", name:"Sabji Masala (500g)",     category:"Groceries & Staples", emoji:"🌶️", price:"₹140" },
-
-  // ── GROCERIES & STAPLES — Detergent ───────────────────────
-  { id:"GS05-01", name:"Standard Detergent (500g)", category:"Groceries & Staples", emoji:"🧺", price:"₹40" },
-
-  // ── GROCERIES & STAPLES — Rice ────────────────────────────
-  { id:"GS06-01", name:"Indrayani Rice (1kg)",    category:"Groceries & Staples", emoji:"🍚", price:"₹80" },
-  { id:"GS06-02", name:"Jeera Rice (1kg)",        category:"Groceries & Staples", emoji:"🍚", price:"₹80" },
-
-  // ── GROCERIES & STAPLES — Papad ───────────────────────────
-  { id:"GS07-01", name:"Urid Papad (1kg)",        category:"Groceries & Staples", emoji:"🫓", price:"₹400" },
-  { id:"GS07-02", name:"Nagli Papad (20 pcs)",    category:"Groceries & Staples", emoji:"🫓", price:"₹60" },
-  { id:"GS07-03", name:"Rice Papad (20 pcs)",     category:"Groceries & Staples", emoji:"🫓", price:"₹40" },
-  { id:"GS07-04", name:"Urid Papad (500g)",       category:"Groceries & Staples", emoji:"🫓", price:"₹210" },
-  { id:"GS07-05", name:"Urid Papad (200g)",       category:"Groceries & Staples", emoji:"🫓", price:"₹85" },
-
-  // ── GROCERIES & STAPLES — Biscuits ────────────────────────
-  { id:"GS08-01", name:"Nagli Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹200" },
-  { id:"GS08-02", name:"Jawar Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹80" },
-  { id:"GS08-03", name:"Bajra Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹80" },
-  { id:"GS08-04", name:"Wheat Biscuit (200g)",    category:"Groceries & Staples", emoji:"🍪", price:"₹80" },
-
-  // ── SNACKS & BRANDED FOODS ────────────────────────────────
-  { id:"SN01-01", name:"Amla Barfi (500g)",       category:"Snacks & Branded Foods", emoji:"🍬", price:"₹80" },
-  { id:"SN02-01", name:"Papita Laddoo (500g)",    category:"Snacks & Branded Foods", emoji:"🍡", price:"₹80" },
-
-  // ── BEVERAGES ─────────────────────────────────────────────
-  { id:"BV01-01", name:"Amla Juice (1 Liter)",       category:"Beverages", emoji:"🍹", price:"" },
-  { id:"BV01-02", name:"Aloe Vera Juice (1 Liter)",  category:"Beverages", emoji:"🥤", price:"" },
-  { id:"BV02-01", name:"Sugarcane Vinegar (1 Liter)",category:"Beverages", emoji:"🍶", price:"" },
-
-  // ── FRUITS & VEGETABLES ───────────────────────────────────
-  { id:"FV01-01", name:"Mango Pickle (70g)",      category:"Fruits & Vegetables", emoji:"🥭", price:"₹30" },
-  { id:"FV01-02", name:"Olive Pickle (80g)",      category:"Fruits & Vegetables", emoji:"🫒", price:"₹30" },
-
-  // ── POOJA & RELIGIOUS ─────────────────────────────────────
-  { id:"PR01-01", name:"Agarbatti (20 pcs)",         category:"Pooja & Religious", emoji:"🪔", price:"₹10" },
-  { id:"PR01-02", name:"Rose Agarbatti (2 sticks)",  category:"Pooja & Religious", emoji:"🌹", price:"₹10" },
-  { id:"PR01-03", name:"Baily Agarbatti (2 sticks)", category:"Pooja & Religious", emoji:"🌸", price:"₹10" },
-  { id:"PR01-04", name:"Chandan Agarbatti (20 sticks)", category:"Pooja & Religious", emoji:"🪵", price:"" },
-  { id:"PR01-05", name:"Jasmine Agarbatti (20 sticks)", category:"Pooja & Religious", emoji:"🌺", price:"" },
-  { id:"PR02-01", name:"Cotton Wicks (7g)",          category:"Pooja & Religious", emoji:"🕯️", price:"" },
-
+  { id:"PC01-01", name:"Neem Soap (75g)",              category:"Personal Care", image:"https://drive.google.com/file/d/1UmXS6PzuCSyWRSTidSNy0tlIX7uL8DMI/view?usp=sharing", price:"25 Lp",  moq:2,  seller:"Maa laxmi producer group, Assam", description:"Natural neem-based soap with antibacterial properties. Ideal for daily use.", details:"Weight: 75g | Type: Bath Soap | Fragrance: Neem | 6 month Shelf life" },
+  { id:"PC01-03", name:"Chandan Soap (75g)",           category:"Personal Care",        emoji:"🧼", price:"25 Lp",  moq:10 },
+  { id:"PC01-04", name:"Rose Soap (75g)",              category:"Personal Care",        emoji:"🌹", price:"30 Lp" },
+  { id:"PC01-05", name:"Lemon Soap (75g)",             category:"Personal Care",        emoji:"🍋", price:"30 Lp",  moq:10 },
+  { id:"PC01-06", name:"Aloe Vera Soap (75g)",         category:"Personal Care",        emoji:"🌿", price:"30 Lp" },
+  { id:"PC01-07", name:"Neem Soap Premium (75g)",      category:"Personal Care",        emoji:"🧼", price:"40 Lp" },
+  { id:"PC01-08", name:"Lemongrass Soap (75g)",        category:"Personal Care",        emoji:"🌾", price:"40 Lp" },
+  { id:"PC01-09", name:"Chandan Soap Premium (75g)",   category:"Personal Care",        emoji:"🪵", price:"40 Lp" },
+  { id:"PC01-10", name:"Charcoal Soap (75g)",          category:"Personal Care", image:"https://drive.google.com/file/d/1JSnRIcEnqqcfZckv6Rhc-gzfn-0Enf4s/view?usp=sharing", price:"40 Lp" ,},
+  { id:"HC01-01", name:"White Phenyl (500ml)",         category:"Household & Cleaning", emoji:"🫧", price:"40 Lp" },
+  { id:"HC01-02", name:"Green Phenyl (500ml)",         category:"Household & Cleaning", emoji:"🫧", price:"50 Lp" },
+  { id:"HC02-01", name:"Toilet Cleaner (500ml)",       category:"Household & Cleaning", emoji:"🚽", price:"70 Lp" },
+  { id:"HC03-01", name:"Floor Cleaner (1 Liter)",      category:"Household & Cleaning", emoji:"🪣", price:"50 Lp" },
+  { id:"HC03-02", name:"Floor Cleaner (5 Liter)",      category:"Household & Cleaning", emoji:"🪣", price:"150 Lp" },
+  { id:"HC04-01", name:"Lemon Dishwash Liquid (250ml)",category:"Household & Cleaning", emoji:"🍽️", price:"50 Lp" },
+  { id:"HC04-02", name:"Lemon Dishwash Tub (450g)",    category:"Household & Cleaning", emoji:"🍽️", price:"50 Lp" },
+  { id:"HC04-03", name:"Lemon Dishwash Liquid (500ml)",category:"Household & Cleaning", emoji:"🍽️", price:"90 Lp" },
+  { id:"HC04-04", name:"Lemon Dishwash Tub (250g)",    category:"Household & Cleaning", emoji:"🍽️", price:"20 Lp" },
+  { id:"HC04-05", name:"Lemon Dishwash (250ml)",       category:"Household & Cleaning", emoji:"🍋", price:"35 Lp" },
+  { id:"HC05-01", name:"Standard Detergent (1kg)",     category:"Household & Cleaning", emoji:"🧺", price:"70 Lp" },
+  { id:"HC05-02", name:"Lemon Detergent (2kg)",        category:"Household & Cleaning", emoji:"🧺", price:"50 Lp" },
+  { id:"HC05-03", name:"Lemon Detergent Premium (2kg)",category:"Household & Cleaning", emoji:"🧺", price:"100 Lp" },
+  { id:"GS01-01", name:"Mixed Pickle (50g)",           category:"Groceries & Staples",  emoji:"🫙", price:"30 Lp" },
+  { id:"GS01-02", name:"Mixed Pickle (30g)",           category:"Groceries & Staples",  emoji:"🫙", price:"10 Lp" },
+  { id:"GS01-03", name:"Tamarind Pickle (80g)",        category:"Groceries & Staples",  emoji:"🫙", price:"30 Lp" },
+  { id:"GS01-04", name:"Mix Veg Pickle (80g)",         category:"Groceries & Staples",  emoji:"🫙", price:"30 Lp" },
+  { id:"GS01-05", name:"Chilly Pickle (80g)",          category:"Groceries & Staples",  emoji:"🌶️", price:"30 Lp" },
+  { id:"GS01-06", name:"Lemon Pickle (80g)",           category:"Groceries & Staples",  emoji:"🍋", price:"30 Lp" },
+  { id:"GS01-07", name:"Mushroom Pickle (100g)",       category:"Groceries & Staples",  emoji:"🍄", price:"70 Lp" },
+  { id:"GS01-08", name:"Mushroom Pickle (50g)",        category:"Groceries & Staples",  emoji:"🍄", price:"35 Lp" },
+  { id:"GS01-09", name:"Mango Pickle (100g)",          category:"Groceries & Staples",  emoji:"🥭", price:"70 Lp" },
+  { id:"GS01-10", name:"Mango Pickle (50g)",           category:"Groceries & Staples",  emoji:"🥭", price:"35 Lp" },
+  { id:"GS02-01", name:"Maize Atta (2kg)",             category:"Groceries & Staples",  emoji:"🌽", price:"50 Lp" },
+  { id:"GS02-02", name:"Maize Atta (2kg) Std",        category:"Groceries & Staples",  emoji:"🌽", price:"30 Lp" },
+  { id:"GS02-03", name:"Wheat Atta (500g)",            category:"Groceries & Staples",  emoji:"🌾", price:"20 Lp" },
+  { id:"GS02-04", name:"Bajra Atta (500g)",            category:"Groceries & Staples",  emoji:"🌾", price:"40 Lp" },
+  { id:"GS02-05", name:"Ragi Atta (500g)",             category:"Groceries & Staples",  emoji:"🌾", price:"60 Lp" },
+  { id:"GS02-06", name:"Maize Atta (500g)",            category:"Groceries & Staples",  emoji:"🌽", price:"40 Lp" },
+  { id:"GS02-07", name:"Jwar Atta (500g)",             category:"Groceries & Staples",  emoji:"🌾", price:"50 Lp" },
+  { id:"GS02-08", name:"Bengal Black Chana Besan (500g)",category:"Groceries & Staples",emoji:"🫘", price:"60 Lp" },
+  { id:"GS03-01", name:"Chana Sattu (500g)",           category:"Groceries & Staples",  emoji:"🫘", price:"60 Lp" },
+  { id:"GS03-02", name:"Jau Sattu (500g)",             category:"Groceries & Staples",  emoji:"🌾", price:"60 Lp" },
+  { id:"GS04-01", name:"Haldi (500g)",                 category:"Groceries & Staples",  emoji:"🟡", price:"160 Lp" },
+  { id:"GS04-02", name:"Adauri/Bari (200g)",           category:"Groceries & Staples",  emoji:"🫙", price:"40 Lp" },
+  { id:"GS04-03", name:"Sabji Masala (500g)",          category:"Groceries & Staples",  emoji:"🌶️", price:"140 Lp" },
+  { id:"GS05-01", name:"Standard Detergent (500g)",    category:"Groceries & Staples",  emoji:"🧺", price:"40 Lp" },
+  { id:"GS06-01", name:"Indrayani Rice (1kg)",         category:"Groceries & Staples",  emoji:"🍚", price:"80 Lp" },
+  { id:"GS06-02", name:"Jeera Rice (1kg)",             category:"Groceries & Staples",  emoji:"🍚", price:"80 Lp" },
+  { id:"GS07-01", name:"Urid Papad (1kg)",             category:"Groceries & Staples",  emoji:"🫓", price:"400 Lp" },
+  { id:"GS07-02", name:"Nagli Papad (20 pcs)",         category:"Groceries & Staples",  emoji:"🫓", price:"60 Lp" },
+  { id:"GS07-03", name:"Rice Papad (20 pcs)",          category:"Groceries & Staples",  emoji:"🫓", price:"40 Lp" },
+  { id:"GS07-04", name:"Urid Papad (500g)",            category:"Groceries & Staples",  emoji:"🫓", price:"210 Lp" },
+  { id:"GS07-05", name:"Urid Papad (200g)",            category:"Groceries & Staples",  emoji:"🫓", price:"85 Lp" },
+  { id:"GS08-01", name:"Nagli Biscuit (200g)",         category:"Groceries & Staples",  emoji:"🍪", price:"200 Lp" },
+  { id:"GS08-02", name:"Jawar Biscuit (200g)",         category:"Groceries & Staples",  emoji:"🍪", price:"80 Lp" },
+  { id:"GS08-03", name:"Bajra Biscuit (200g)",         category:"Groceries & Staples",  emoji:"🍪", price:"80 Lp" },
+  { id:"GS08-04", name:"Wheat Biscuit (200g)",         category:"Groceries & Staples",  emoji:"🍪", price:"80 Lp" },
+  { id:"SN01-01", name:"Amla Barfi (500g)",            category:"Snacks & Branded Foods",emoji:"🍬", price:"80 Lp" },
+  { id:"SN02-01", name:"Papita Laddoo (500g)",         category:"Snacks & Branded Foods",emoji:"🍡", price:"80 Lp" },
+  { id:"BV01-01", name:"Amla Juice (1 Liter)",         category:"Beverages",            emoji:"🍹", price:"" },
+  { id:"BV01-02", name:"Aloe Vera Juice (1 Liter)",    category:"Beverages",            emoji:"🥤", price:"" },
+  { id:"BV02-01", name:"Sugarcane Vinegar (1 Liter)",  category:"Beverages",            emoji:"🍶", price:"" },
+  { id:"FV01-01", name:"Mango Pickle (70g)",           category:"Fruits & Vegetables",  emoji:"🥭", price:"30 Lp" },
+  { id:"FV01-02", name:"Olive Pickle (80g)",           category:"Fruits & Vegetables",  emoji:"🫒", price:"30 Lp" },
+  { id:"PR01-01", name:"Agarbatti (20 pcs)",           category:"Pooja & Religious",    emoji:"🪔", price:"10 Lp" },
+  { id:"PR01-02", name:"Rose Agarbatti (2 sticks)",    category:"Pooja & Religious",    emoji:"🌹", price:"10 Lp" },
+  { id:"PR01-03", name:"Baily Agarbatti (2 sticks)",   category:"Pooja & Religious",    emoji:"🌸", price:"10 Lp" },
+  { id:"PR01-04", name:"Chandan Agarbatti (20 sticks)",category:"Pooja & Religious",    emoji:"🪵", price:"10 Lp" },
+  { id:"PR01-05", name:"Jasmine Agarbatti (20 sticks)",category:"Pooja & Religious",    emoji:"🌺", price:"10 Lp" },
+  { id:"PR02-01", name:"Cotton Wicks (7g)",            category:"Pooja & Religious",    emoji:"🕯️", price:"10 Lp" },
 ];
-/* ================================================================
-   STATE — tracks which products are selected and their quantities
-================================================================ */
-const state = {};  // e.g. { "g1": 2, "b3": 1 }
-let currentCat = "All";
 
-/* ================================================================
-   BUILD CATEGORY TABS DYNAMICALLY
-================================================================ */
+/* ── STATE ── */
+const state = {};
+let currentCat = "All";
+let currentModalId = null;
+
+/* ── TABS ── */
 function buildTabs() {
   const cats = [...new Set(PRODUCTS.map(p => p.category))];
   const tabsEl = document.getElementById("cat-tabs");
-
   cats.forEach(cat => {
     const btn = document.createElement("button");
     btn.className = "cat-tab";
@@ -649,135 +375,116 @@ function buildTabs() {
     btn.textContent = cat;
     tabsEl.appendChild(btn);
   });
-
-  // Click handler on tabs container (event delegation)
   tabsEl.addEventListener("click", e => {
     const tab = e.target.closest(".cat-tab");
     if (!tab) return;
-
-    // Update active class
     tabsEl.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
-
     currentCat = tab.dataset.cat;
     renderGrid();
   });
 }
 
-/* ================================================================
-   RENDER PRODUCT GRID
-================================================================ */
+/* ── GRID ── */
 function renderGrid() {
   const grid = document.getElementById("product-grid");
-  grid.innerHTML = "";  // clear existing cards
-
-  // Filter products based on selected category
-  const filtered = currentCat === "All"
-    ? PRODUCTS
-    : PRODUCTS.filter(p => p.category === currentCat);
+  grid.innerHTML = "";
+  const filtered = currentCat === "All" ? PRODUCTS : PRODUCTS.filter(p => p.category === currentCat);
 
   filtered.forEach(product => {
     const isSelected = !!state[product.id];
-    const qty = state[product.id] || 1;
+    const moq = product.moq || 1;
+    const qty = state[product.id] || moq;
 
-    // Build card HTML
     const card = document.createElement("div");
     card.className = "product-card" + (isSelected ? " selected" : "");
     card.dataset.id = product.id;
+    card.dataset.moq = moq;
 
     card.innerHTML = `
-      <!-- Checkbox tick -->
       <div class="card-check">
         <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
           <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-
-      <!-- Image placeholder using emoji -->
-      <div class="card-img">${product.emoji}</div>
-
-      <!-- Card details -->
+      <div class="card-img modal-trigger" data-id="${product.id}">
+        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;">` : product.emoji}
+      </div>
       <div class="card-body">
         <div class="card-name">${product.name}</div>
         <div class="card-cat">${product.category}</div>
         ${product.price ? `<div class="card-price">${product.price}</div>` : ""}
-
-        <!-- Quantity controls (visible only when selected) -->
+        ${moq > 1 ? `<div class="moq-badge">Min: ${moq}</div>` : ""}
         <div class="qty-controls" style="display:${isSelected ? 'flex' : 'none'}">
-          <button class="qty-btn" data-action="dec" data-id="${product.id}">−</button>
+          <button class="qty-btn" data-action="dec" data-id="${product.id}" data-moq="${moq}">−</button>
           <span class="qty-display" id="qty-${product.id}">${qty}</span>
           <button class="qty-btn" data-action="inc" data-id="${product.id}">+</button>
         </div>
       </div>
     `;
-
     grid.appendChild(card);
   });
 
-  // Attach event listeners to newly created cards
   attachCardListeners();
 }
 
-/* ================================================================
-   CARD CLICK EVENTS — select/deselect & quantity
-================================================================ */
+/* ── CARD LISTENERS ── */
 function attachCardListeners() {
   const grid = document.getElementById("product-grid");
 
-  // Toggle card selection when clicking the card body
   grid.querySelectorAll(".product-card").forEach(card => {
     card.addEventListener("click", e => {
-      // If click was on a qty button, don't toggle selection
       if (e.target.closest(".qty-btn")) return;
-
+      if (e.target.closest(".modal-trigger")) return;
       const id = card.dataset.id;
+      const moq = parseInt(card.dataset.moq) || 1;
       if (state[id]) {
-        // Deselect
         delete state[id];
         card.classList.remove("selected");
         card.querySelector(".qty-controls").style.display = "none";
       } else {
-        // Select with default qty 1
-        state[id] = 1;
+        state[id] = moq;
         card.classList.add("selected");
         card.querySelector(".qty-controls").style.display = "flex";
+        document.getElementById("qty-" + id).textContent = moq;
       }
       updateSummary();
     });
   });
 
-  // Quantity + / − buttons
   grid.querySelectorAll(".qty-btn").forEach(btn => {
     btn.addEventListener("click", e => {
-      e.stopPropagation();  // don't bubble to card toggle
+      e.stopPropagation();
       const id = btn.dataset.id;
-      const action = btn.dataset.action;
-
-      if (!state[id]) state[id] = 1;
-
-      if (action === "inc") {
+      const moq = parseInt(btn.dataset.moq) || 1;
+      if (!state[id]) state[id] = moq;
+      if (btn.dataset.action === "inc") {
         state[id]++;
-      } else if (action === "dec") {
-        state[id] = Math.max(1, state[id] - 1);
+      } else {
+        state[id] = Math.max(moq, state[id] - 1);
       }
-
-      // Update displayed qty
       document.getElementById("qty-" + id).textContent = state[id];
       updateSummary();
     });
   });
+
+  grid.querySelectorAll(".modal-trigger").forEach(trigger => {
+    trigger.addEventListener("click", e => {
+      e.stopPropagation();
+      openModal(trigger.dataset.id);
+    });
+  });
 }
 
-/* ================================================================
-   UPDATE WISHLIST SUMMARY
-================================================================ */
+/* ── SUMMARY ── */
 function updateSummary() {
-  const list = document.getElementById("summary-list");
-  const empty = document.getElementById("summary-empty");
-  const totalEl = document.getElementById("total-count");
-  const totalPriceEl = document.getElementById("total-price");
-  const totalWrap = document.getElementById("summary-total");
-  const badge = document.getElementById("cart-badge");
+  const list       = document.getElementById("summary-list");
+  const empty      = document.getElementById("summary-empty");
+  const totalEl    = document.getElementById("total-count");
+  const totalPrEl  = document.getElementById("total-price");
+  const totalWrap  = document.getElementById("summary-total");
+  const badge      = document.getElementById("cart-badge");
+  const priceBadge = document.getElementById("price-badge");
 
   const selectedIds = Object.keys(state);
   list.innerHTML = "";
@@ -785,96 +492,70 @@ function updateSummary() {
   if (selectedIds.length === 0) {
     empty.style.display = "block";
     totalWrap.style.display = "none";
-  } else {
-    empty.style.display = "none";
-    totalWrap.style.display = "flex";
-
-    let totalQty = 0;
-    let grandTotal = 0;
-    let allPriced = true; // track if every item has a price
-
-    selectedIds.forEach(id => {
-      const product = PRODUCTS.find(p => p.id === id);
-      if (!product) return;
-
-      const qty = state[id];
-      totalQty += qty;
-
-      // Parse price — strips "₹" and converts to number
-      const unitPrice = product.price
-        ? parseFloat(product.price.replace(/[^\d.]/g, ""))
-        : null;
-
-      const lineTotal = unitPrice !== null ? unitPrice * qty : null;
-      if (lineTotal !== null) grandTotal += lineTotal;
-      else allPriced = false;
-
-      const li = document.createElement("li");
-      li.className = "summary-item";
-      li.innerHTML = `
-        <span class="s-name">${product.emoji} ${product.name}</span>
-        <span class="s-qty">×${qty}</span>
-        ${lineTotal !== null
-          ? `<span class="s-price">₹${lineTotal.toLocaleString('en-IN')}</span>`
-          : ""}
-      `;
-      list.appendChild(li);
-    });
-
-    totalEl.textContent = totalQty;
-
-    // Show grand total — note if some items have no price
-    if (allPriced) {
-      totalPriceEl.textContent = "₹" + grandTotal.toLocaleString('en-IN');
-    } else if (grandTotal > 0) {
-      totalPriceEl.textContent = "₹" + grandTotal.toLocaleString('en-IN') + "+";
-    } else {
-      totalPriceEl.textContent = "—";
-    }
-
-    // Animate badge
-    badge.textContent = totalQty + (totalQty === 1 ? " item" : " items");
+    badge.textContent = "0 items";
+    priceBadge.textContent = "0 Lp";
     badge.classList.add("pop");
     setTimeout(() => badge.classList.remove("pop"), 300);
+    return;
   }
+
+  empty.style.display = "none";
+  totalWrap.style.display = "flex";
+
+  let totalQty = 0, grandTotal = 0, allPriced = true;
+
+  selectedIds.forEach(id => {
+    const product = PRODUCTS.find(p => p.id === id);
+    if (!product) return;
+    const qty = state[id];
+    totalQty += qty;
+    const unitPrice = product.price ? parseFloat(product.price.replace(/[^\d.]/g, "")) : null;
+    const lineTotal = unitPrice !== null ? unitPrice * qty : null;
+    if (lineTotal !== null) grandTotal += lineTotal;
+    else allPriced = false;
+
+    const li = document.createElement("li");
+    li.className = "summary-item";
+    li.innerHTML = `
+      <span class="s-name">${product.emoji} ${product.name}</span>
+      <span class="s-qty">×${qty}</span>
+      ${lineTotal !== null ? `<span class="s-price">${lineTotal.toLocaleString('en-IN')} Lp</span>` : ""}
+    `;
+    list.appendChild(li);
+  });
+
+  totalEl.textContent = totalQty;
+  const priceText = allPriced ? grandTotal.toLocaleString('en-IN') + " Lp"
+    : grandTotal > 0 ? grandTotal.toLocaleString('en-IN') + " Lp+" : "—";
+  totalPrEl.textContent = priceText;
+
+  badge.textContent = totalQty + (totalQty === 1 ? " item" : " items");
+  priceBadge.textContent = priceText;
+  badge.classList.add("pop"); priceBadge.classList.add("pop");
+  setTimeout(() => { badge.classList.remove("pop"); priceBadge.classList.remove("pop"); }, 300);
 }
 
-/* ================================================================
-   FORM VALIDATION
-================================================================ */
+/* ── VALIDATION ── */
 function validateForm() {
   let valid = true;
-
-  // Helper: show/hide error
   function setError(inputId, errId, condition) {
     const input = document.getElementById(inputId);
-    const err   = document.getElementById(errId);
-    if (condition) {
-      input.classList.add("error");
-      err.classList.add("visible");
-      valid = false;
-    } else {
-      input.classList.remove("error");
-      err.classList.remove("visible");
-    }
+    const err = document.getElementById(errId);
+    if (condition) { input.classList.add("error"); err.classList.add("visible"); valid = false; }
+    else { input.classList.remove("error"); err.classList.remove("visible"); }
   }
-
   const name  = document.getElementById("emp-name").value.trim();
   const code  = document.getElementById("emp-code").value.trim();
   const phone = document.getElementById("emp-phone").value.trim();
   const pin   = document.getElementById("emp-pin").value.trim();
-
   setError("emp-name",  "err-name",  !name);
   setError("emp-code",  "err-code",  !code);
   setError("emp-phone", "err-phone", phone && !/^\d{7,15}$/.test(phone));
-  setError("emp-pin",   "err-pin",   pin   && !/^\d{4,10}$/.test(pin));
-
+  setError("emp-pin",   "err-pin",   pin && !/^\d{4,10}$/.test(pin));
   return valid;
 }
 
-/* ================================================================
-   SHOW TOAST NOTIFICATION
-================================================================ */
+/* ── TOAST ── */
 function showToast(msg, type = "") {
   const toast = document.getElementById("toast");
   toast.textContent = msg;
@@ -882,86 +563,157 @@ function showToast(msg, type = "") {
   setTimeout(() => { toast.className = ""; }, 3500);
 }
 
-/* ================================================================
-   SUBMIT — collect data and send to Google Sheets
-================================================================ */
-document.getElementById("submit-btn").addEventListener("click", async () => {
-  // Step 1: Validate form fields
-  if (!validateForm()) {
-    showToast("⚠️ Please fix the errors above.", "error-toast");
-    return;
-  }
-
-  // Step 2: Check at least one product selected
-  const selectedIds = Object.keys(state);
-  if (selectedIds.length === 0) {
-    showToast("🛒 Please select at least one product.", "error-toast");
-    return;
-  }
-
-  // Step 3: Collect employee info
-  const empName  = document.getElementById("emp-name").value.trim();
-  const empCode  = document.getElementById("emp-code").value.trim();
-  const empPhone = document.getElementById("emp-phone").value.trim();
-  const empPin   = document.getElementById("emp-pin").value.trim();
-
-  // Step 4: Build selected products/quantities arrays
-const productIds   = [];
-const productNames = [];
-const productQtys  = [];
-let totalItems = 0;
-let totalPrice = 0;
-
-selectedIds.forEach(id => {
-  const product = PRODUCTS.find(p => p.id === id);
+/* ── MODAL ── */
+function openModal(productId) {
+  const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
+  currentModalId = productId;
 
-  const qty       = state[id];
-  const unitPrice = product.price
-    ? parseFloat(product.price.replace(/[^\d.]/g, ""))
-    : 0;
-  const lineTotal = unitPrice * qty;
+  const imgEl   = document.getElementById("modal-img");
+  const emojiEl = document.getElementById("modal-emoji");
+  const oldImg  = imgEl.querySelector("img");
+  if (oldImg) oldImg.remove();
 
-  productIds.push(product.id);       // ← product ID
-  productNames.push(product.name);
-  productQtys.push(qty);
+  if (product.image) {
+    emojiEl.style.display = "none";
+    const img = document.createElement("img");
+    img.src = product.image; img.alt = product.name;
+    img.style = "width:100%;height:100%;object-fit:cover;";
+    img.onerror = () => { img.remove(); emojiEl.style.display = "block"; emojiEl.textContent = product.emoji || "🛒"; };
+    imgEl.appendChild(img);
+  } else {
+    emojiEl.style.display = "block";
+    emojiEl.textContent = product.emoji || "🛒";
+  }
 
-  totalItems += qty;
-  totalPrice += lineTotal;
+  document.getElementById("modal-cat").textContent         = product.category;
+  document.getElementById("modal-name").textContent        = product.name;
+  document.getElementById("modal-price").textContent       = product.price || "Price TBD";
+  document.getElementById("modal-seller").textContent      = product.seller || "—";
+  document.getElementById("modal-description").textContent = product.description || "No description available.";
+  document.getElementById("modal-details").textContent     = product.details || "—";
+
+  const moqEl = document.getElementById("modal-moq");
+  if (product.moq && product.moq > 1) { moqEl.textContent = "Min. Order: " + product.moq; moqEl.style.display = "block"; }
+  else { moqEl.style.display = "none"; }
+
+  updateModalBtn(productId);
+  document.getElementById("modal-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+  currentModalId = null;
+}
+
+function updateModalBtn(productId) {
+  const btn = document.getElementById("modal-wishlist-btn");
+  if (state[productId]) { btn.textContent = "✓ Added — Remove from Wishlist"; btn.className = "modal-wishlist-btn remove"; }
+  else { btn.textContent = "+ Add to Wishlist"; btn.className = "modal-wishlist-btn add"; }
+}
+
+document.getElementById("modal-close").addEventListener("click", closeModal);
+document.getElementById("modal-overlay").addEventListener("click", e => { if (e.target === document.getElementById("modal-overlay")) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+document.getElementById("modal-wishlist-btn").addEventListener("click", () => {
+  if (!currentModalId) return;
+  const product = PRODUCTS.find(p => p.id === currentModalId);
+  if (!product) return;
+  const moq = product.moq || 1;
+  if (state[currentModalId]) {
+    delete state[currentModalId];
+    const card = document.querySelector(`.product-card[data-id="${currentModalId}"]`);
+    if (card) { card.classList.remove("selected"); card.querySelector(".qty-controls").style.display = "none"; }
+  } else {
+    state[currentModalId] = moq;
+    const card = document.querySelector(`.product-card[data-id="${currentModalId}"]`);
+    if (card) {
+      card.classList.add("selected");
+      card.querySelector(".qty-controls").style.display = "flex";
+      const qtyEl = document.getElementById("qty-" + currentModalId);
+      if (qtyEl) qtyEl.textContent = moq;
+    }
+  }
+  updateModalBtn(currentModalId);
+  updateSummary();
 });
 
-  // Step 5: Prepare payload
+/* ── CONTINUE ── */
+document.getElementById("continue-btn").addEventListener("click", () => {
+  if (!validateForm()) { showToast("⚠️ Please fix the errors above.", "error-toast"); return; }
+  if (Object.keys(state).length === 0) { showToast("🛒 Please select at least one product.", "error-toast"); return; }
+
+  const empName = document.getElementById("emp-name").value.trim();
+  const empCode = document.getElementById("emp-code").value.trim();
+  document.getElementById("recap-name").textContent  = empName;
+  document.getElementById("recap-code").textContent  = empCode;
+  document.getElementById("recap-items").textContent = document.getElementById("total-count").textContent + " items";
+  document.getElementById("recap-price").textContent = document.getElementById("total-price").textContent;
+
+  const names = Object.keys(state).map(id => {
+    const p = PRODUCTS.find(pr => pr.id === id);
+    return p ? `${p.emoji} ${p.name} ×${state[id]}` : "";
+  }).filter(Boolean).join(", ");
+  document.getElementById("recap-products").textContent = names;
+
+  document.getElementById("page1").classList.remove("active");
+  document.getElementById("page2").classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/* ── BACK ── */
+document.getElementById("back-btn").addEventListener("click", () => {
+  document.getElementById("page2").classList.remove("active");
+  document.getElementById("page1").classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/* ── SUBMIT ── */
+document.getElementById("submit-btn").addEventListener("click", async () => {
+  const empName     = document.getElementById("emp-name").value.trim();
+  const empCode     = document.getElementById("emp-code").value.trim();
+  const empPhone    = document.getElementById("emp-phone").value.trim();
+  const empPin      = document.getElementById("emp-pin").value.trim();
+  const empFeedback = document.getElementById("emp-feedback").value.trim();
+
+  const selectedIds  = Object.keys(state);
+  const productIds   = [], productNames = [], productQtys = [];
+  let totalItems = 0, totalPrice = 0;
+
+  selectedIds.forEach(id => {
+    const product = PRODUCTS.find(p => p.id === id);
+    if (!product) return;
+    const qty = state[id];
+    const unitPrice = product.price ? parseFloat(product.price.replace(/[^\d.]/g, "")) : 0;
+    productIds.push(product.id);
+    productNames.push(product.name);
+    productQtys.push(qty);
+    totalItems += qty;
+    totalPrice += unitPrice * qty;
+  });
+
   const payload = {
-    employeeName:   empName,
-    employeeCode:   empCode,
-    phoneNumber:    empPhone,
-    pinCode:        empPin,
-    productIds:    productIds.join(", "),
-    selectedProducts: productNames.join(", "),
-    selectedQtys:     productQtys.join(", "),
-    totalItems:       totalItems,
+    employeeName: empName, employeeCode: empCode,
+    phoneNumber: empPhone, pinCode: empPin,
+    feedback: empFeedback,
+    productIds:   productIds.join(", "),
+    productNames: productNames.join(", "),
+    quantities:   productQtys.join(", "),
+    totalItems:   totalItems,
+    totalPrice:   totalPrice,
   };
 
-  // Step 6: Send to Google Sheets via Apps Script
   const btn = document.getElementById("submit-btn");
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Submitting…';
 
   try {
-    // We use 'no-cors' to avoid CORS issues with Apps Script
-    await fetch(SHEET_URL, {
-      method: "POST",
-      mode:   "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    // With no-cors we can't read the response, so assume success
+    await fetch(SHEET_URL, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
     showToast("✅ Submitted successfully! Thank you.", "success");
-
-    // Reset form
     resetForm();
-
   } catch (err) {
     console.error(err);
     showToast("❌ Submission failed. Check your internet.", "error-toast");
@@ -971,30 +723,22 @@ selectedIds.forEach(id => {
   }
 });
 
-/* ================================================================
-   RESET FORM AFTER SUBMISSION
-================================================================ */
+/* ── RESET ── */
 function resetForm() {
-  // Clear employee fields
-  ["emp-name","emp-code","emp-phone","emp-pin"].forEach(id => {
-    document.getElementById(id).value = "";
-  });
-
-  // Clear selections
+  ["emp-name","emp-code","emp-phone","emp-pin"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("emp-feedback").value = "";
   for (const key in state) delete state[key];
-
-  // Re-render grid and summary
   renderGrid();
   updateSummary();
+  document.getElementById("page2").classList.remove("active");
+  document.getElementById("page1").classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* ================================================================
-   INITIALISE APP
-================================================================ */
+/* ── INIT ── */
 buildTabs();
 renderGrid();
 updateSummary();
 </script>
-
 </body>
 </html>
