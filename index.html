@@ -303,26 +303,29 @@
       flex-shrink: 0;
     }
     .qty-btn:active { background: var(--tag-bg); }
-    .qty-display {
-      font-size: 0.8rem;
+    .qty-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
       font-weight: 700;
-      min-width: 44px;
-      text-align: center;
+      color: var(--ink);
       background: var(--tag-bg);
-      border-radius: 5px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
       padding: 3px 4px;
-      cursor: ns-resize;
-      user-select: none;
-      line-height: 1.3;
+      text-align: center;
+      cursor: pointer;
+      outline: none;
+      min-width: 64px;
+      transition: border-color 0.15s;
+      -webkit-appearance: auto;
     }
-    .qty-display .qty-packs {
+    .qty-select:focus { border-color: var(--accent); }
+    .qty-units-label {
       display: block;
-      font-size: 0.75rem;
-    }
-    .qty-display .qty-units {
-      display: block;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       color: var(--muted);
+      text-align: center;
+      margin-top: 1px;
       font-weight: 500;
     }
 
@@ -817,192 +820,108 @@ const SHEET_URL = "https://script.google.com/macros/s/AKfycbzbr8caqlN4Ki4kWKjKEt
 
 const PRODUCTS = [
 
-  // ── PERSONAL CARE ────────────────────────────────
-  { id:"PC16", name:"Aloe Vera Bath Soap ( 100 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"100gm" },
-{ id:"PC15", name:"Aloe Vera Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
-{ id:"PC06", name:"Alovera Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC27", name:"Bath Soap ( 1 Pouch )", category:"Personal Care", emoji:"🧼", image:"", price:"40 Lp", bundleSize:4, unitWeight:"1Pouch" },
-{ id:"PC19", name:"Chandan Bath Soap ( 20 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"100 Lp", bundleSize:4, unitWeight:"20gm" },
-{ id:"PC02", name:"Chandan Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"100 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC24", name:"Charcoal Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"50gm" },
-{ id:"PC10", name:"Charcoal Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"160 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC20", name:"Haldi Bath Soap ( 20 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"100 Lp", bundleSize:4, unitWeight:"20gm" },
-{ id:"PC28", name:"Hankey ( 4 Piece )", category:"Personal Care", emoji:"🧻", image:"", price:"145 Lp", bundleSize:"", unitWeight:"4Piece" },
-{ id:"PC05", name:"Lemon Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC08", name:"Lemongrass Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"160 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC25", name:"Multani Mitti Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"50gm" },
-{ id:"PC12", name:"Neem Bath Soap ( 100 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"100gm" },
-{ id:"PC21", name:"Neem Bath Soap ( 20 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"100 Lp", bundleSize:4, unitWeight:"20gm" },
-{ id:"PC11", name:"Neem Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
-{ id:"PC01", name:"Neem Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"100 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC14", name:"Rose Bath Soap ( 100 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"100gm" },
-{ id:"PC13", name:"Rose Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
-{ id:"PC04", name:"Rose Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"75gm" },
-{ id:"PC22", name:"Turmeric & Honey Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"50gm" },
-{ id:"PC18", name:"Turmeric Bath Soap ( 100 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"100gm" },
-{ id:"PC17", name:"Turmeric Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
-  
-
-  // ── HOUSEHOLD & CLEANING ───────────────────────────────────
-  { id:"HC35", name:"Citronella Phenyl ( 500 ml )", category:"Household & Cleaning", emoji:"🧴", image:"", price:"120 Lp", bundleSize:4, unitWeight:"500ml" },
-{ id:"HC03", name:"Floor Cleaner ( 1 Liters )", category:"Household & Cleaning", emoji:"🧴", image:"", price:"150 Lp", bundleSize:3, unitWeight:"1Liters" },
-{ id:"HC04", name:"Floor Cleaner ( 5 Liters )", category:"Household & Cleaning", emoji:"🧴", image:"", price:"150 Lp", bundleSize:"", unitWeight:"5Liters" },
-{ id:"HC05", name:"Green Phenyl ( 500 ml )", category:"Household & Cleaning", emoji:"🧴", image:"", price:"200 Lp", bundleSize:4, unitWeight:"500ml" },
-{ id:"HC34", name:"Lemon Detergent ( 1 Kg )", category:"Household & Cleaning", emoji:"🫧", image:"", price:"180 Lp", bundleSize:2, unitWeight:"1Kg" },
-{ id:"HC14", name:"Lemon Detergent ( 2 Kg )", category:"Household & Cleaning", emoji:"🫧", image:"", price:"50 Lp", bundleSize:"", unitWeight:"2Kg" },
-{ id:"HC33", name:"Lemon Detergent ( 500 gm )", category:"Household & Cleaning", emoji:"🫧", image:"", price:"200 Lp", bundleSize:4, unitWeight:"500gm" },
-{ id:"HC17", name:"Lemon Dishwash ( 250 ml )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"160 Lp", bundleSize:4, unitWeight:"250ml" },
-{ id:"HC18", name:"Lemon Dishwash ( 500 ml )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"240 Lp", bundleSize:3, unitWeight:"500ml" },
-{ id:"HC07", name:"Lemon liquid Dishwash ( 250 ml )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"200 Lp", bundleSize:4, unitWeight:"250ml" },
-{ id:"HC08", name:"Lemon Liquid Dishwash ( 500 ml )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"90 Lp", bundleSize:"", unitWeight:"500ml" },
-{ id:"HC09", name:"Lemon Tub Dishwash ( 250 gm )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"80 Lp", bundleSize:4, unitWeight:"250gm" },
-{ id:"HC10", name:"Lemon Tub Dishwash ( 450 gm )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"150 Lp", bundleSize:3, unitWeight:"450gm" },
-{ id:"HC23", name:"Liquid Dishwash ( 500 ml )", category:"Household & Cleaning", emoji:"🍋", image:"", price:"204 Lp", bundleSize:3, unitWeight:"500ml" },
-{ id:"HC22", name:"Multi Action Toilet Cleaner ( 1 Liters )", category:"Household & Cleaning", emoji:"🚽", image:"", price:"240 Lp", bundleSize:3, unitWeight:"1Liters" },
-{ id:"HC26", name:"Phenyl ( 1 Liters )", category:"Household & Cleaning", emoji:"🧴", image:"", price:"120 Lp", bundleSize:3, unitWeight:"1Liters" },
-{ id:"HC16", name:"Powder Detergent ( 1 Kg )", category:"Household & Cleaning", emoji:"🫧", image:"", price:"160 Lp", bundleSize:2, unitWeight:"1Kg" },
-{ id:"HC25", name:"Powder Detergent ( 100 gm )", category:"Household & Cleaning", emoji:"🫧", image:"", price:"120 Lp", bundleSize:12, unitWeight:"100gm" },
-{ id:"HC11", name:"Powder Detergent ( 1000 gm )", category:"Household & Cleaning", emoji:"🫧", image:"", price:"140 Lp", bundleSize:2, unitWeight:"1000gm" },
-{ id:"HC27", name:"Toilet Cleaner ( 1000 ml )", category:"Household & Cleaning", emoji:"🚽", image:"", price:"240 Lp", bundleSize:3, unitWeight:"1000ml" },
-{ id:"HC02", name:"Toilet Cleaner ( 500 ml )", category:"Household & Cleaning", emoji:"🚽", image:"", price:"280 Lp", bundleSize:4, unitWeight:"500ml" },
-{ id:"HC01", name:"White Phenyl ( 500 ml )", category:"Household & Cleaning", emoji:"🧴", image:"", price:"160 Lp", bundleSize:4, unitWeight:"500ml" },
-
-
-  // ── GROCERIES & STAPLES ────────────────────────────
-{ id:"GS17", name:"Adauri/Bari Spice ( 200 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"240 Lp", bundleSize:6, unitWeight:"200gm" },
-{ id:"GS09", name:"Bajra Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"120 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS33", name:"Bajra Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🍪", image:"", price:"80 Lp", bundleSize:"", unitWeight:"200gm" },
-{ id:"GS15", name:"Bengal Black Chana Besan ( 500 gm )", category:"Groceries & Staples", emoji:"🫘", image:"", price:"240 Lp", bundleSize:4, unitWeight:"500gm" },
-{ id:"GS66", name:"Boiled Rice ( 1 Kg )", category:"Groceries & Staples", emoji:"🍚", image:"", price:"195 Lp", bundleSize:3, unitWeight:"1Kg" },
-{ id:"GS13", name:"Chana Sattu ( 500 gm )", category:"Groceries & Staples", emoji:"🫘", image:"", price:"180 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS56", name:"Chilli Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"300 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS05", name:"Chilly Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
-{ id:"GS65", name:"Golden Green Bayleaf ( 1 Packet )", category:"Groceries & Staples", emoji:"🍃", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"GS47", name:"Green Chilli Pickle ( 1000 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"240 Lp", bundleSize:"", unitWeight:"1000gm" },
-{ id:"GS46", name:"Green Chilli Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"180 Lp", bundleSize:3, unitWeight:"250gm" },
-{ id:"GS45", name:"Green Chilli Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"240 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS63", name:"Haldi Powder Spice ( 100 gm )", category:"Groceries & Staples", emoji:"🌿", image:"", price:"120 Lp", bundleSize:6, unitWeight:"100gm" },
-{ id:"GS16", name:"Haldi Spice ( 500 gm )", category:"Groceries & Staples", emoji:"🌿", image:"", price:"480 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS61", name:"Haldi Spice ( 9 gm )", category:"Groceries & Staples", emoji:"🌿", image:"", price:"60 Lp", bundleSize:12, unitWeight:"9gm" },
-{ id:"GS20", name:"Indrayani Rice ( 1 Kg )", category:"Groceries & Staples", emoji:"🍚", image:"", price:"240 Lp", bundleSize:3, unitWeight:"1Kg" },
-{ id:"GS14", name:"Jau Sattu ( 500 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"180 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS32", name:"Jawar Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🍪", image:"", price:"80 Lp", bundleSize:"", unitWeight:"200gm" },
-{ id:"GS21", name:"Jeera Rice ( 1 Kg )", category:"Groceries & Staples", emoji:"🍚", image:"", price:"240 Lp", bundleSize:3, unitWeight:"1Kg" },
-{ id:"GS12", name:"Jwar Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"150 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS64", name:"Khada Masala Spice ( 100 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"60 Lp", bundleSize:6, unitWeight:"100gm" },
-{ id:"GS50", name:"Lahsun Pickle ( 1000 gm )", category:"Groceries & Staples", emoji:"🧄", image:"", price:"400 Lp", bundleSize:"", unitWeight:"1000gm" },
-{ id:"GS49", name:"Lahsun Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🧄", image:"", price:"300 Lp", bundleSize:3, unitWeight:"250gm" },
-{ id:"GS48", name:"Lahsun Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🧄", image:"", price:"400 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS54", name:"Lemon Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"200 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS06", name:"Lemon Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
-{ id:"GS07", name:"Maize Atta ( 2 Kg )", category:"Groceries & Staples", emoji:"🌽", image:"", price:"50 Lp", bundleSize:"", unitWeight:"2Kg" },
-{ id:"GS11", name:"Maize Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🌽", image:"", price:"120 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS25", name:"Mango Pickle ( 100 gm )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"420 Lp", bundleSize:6, unitWeight:"100gm" },
-{ id:"GS37", name:"Mango Pickle ( 1000 gm )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"240 Lp", bundleSize:"", unitWeight:"1000gm" },
-{ id:"GS36", name:"Mango Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"180 Lp", bundleSize:3, unitWeight:"250gm" },
-{ id:"GS26", name:"Mango Pickle ( 50 gm )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"210 Lp", bundleSize:6, unitWeight:"50gm" },
-{ id:"GS35", name:"Mango Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"240 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS62", name:"Masala Spice ( 9 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"60 Lp", bundleSize:12, unitWeight:"9gm" },
-{ id:"GS04", name:"Mix Veg Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🥕", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
-{ id:"GS44", name:"Mixed Pickle ( 1000 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"240 Lp", bundleSize:"", unitWeight:"1000gm" },
-{ id:"GS43", name:"Mixed Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"180 Lp", bundleSize:3, unitWeight:"250gm" },
-{ id:"GS02", name:"Mixed Pickle ( 30 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"60 Lp", bundleSize:6, unitWeight:"30gm" },
-{ id:"GS01", name:"Mixed Pickle ( 50 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"180 Lp", bundleSize:6, unitWeight:"50gm" },
-{ id:"GS42", name:"Mixed Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"240 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS23", name:"Mushroom Pickle ( 100 gm )", category:"Groceries & Staples", emoji:"🍄", image:"", price:"420 Lp", bundleSize:6, unitWeight:"100gm" },
-{ id:"GS24", name:"Mushroom Pickle ( 50 gm )", category:"Groceries & Staples", emoji:"🍄", image:"", price:"210 Lp", bundleSize:6, unitWeight:"50gm" },
-{ id:"GS31", name:"Nagli Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🍪", image:"", price:"200 Lp", bundleSize:"", unitWeight:"200gm" },
-{ id:"GS27", name:"Nagli Papad ( 20 PC )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"360 Lp", bundleSize:6, unitWeight:"20PC" },
-{ id:"GS57", name:"Namkin Snacks ( 250 gm )", category:"Groceries & Staples", emoji:"🍘", image:"", price:"300 Lp", bundleSize:6, unitWeight:"250gm" },
-{ id:"GS19", name:"Powder Detergent ( 500 gm )", category:"Groceries & Staples", emoji:"🫧", image:"", price:"160 Lp", bundleSize:4, unitWeight:"500gm" },
-{ id:"GS10", name:"Ragi Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"180 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS52", name:"Red Mirchi Pickle ( 1000 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"400 Lp", bundleSize:"", unitWeight:"1000gm" },
-{ id:"GS51", name:"Red Mirchi Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"400 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS28", name:"Rice Papad ( 20 PC )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"240 Lp", bundleSize:6, unitWeight:"20PC" },
-{ id:"GS18", name:"Sabji Masala Spice ( 500 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"420 Lp", bundleSize:3, unitWeight:"500gm" },
-{ id:"GS41", name:"Suran/ Jimikand Pickle ( 1000 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"400 Lp", bundleSize:"", unitWeight:"1000gm" },
-{ id:"GS40", name:"Suran/ Jimikand Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"300 Lp", bundleSize:3, unitWeight:"250gm" },
-{ id:"GS39", name:"Suran/ Jimikand Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"400 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS38", name:"Suran Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"400 Lp", bundleSize:2, unitWeight:"500gm" },
-{ id:"GS58", name:"Sweet Snacks ( 250 gm )", category:"Groceries & Staples", emoji:"🍬", image:"", price:"300 Lp", bundleSize:6, unitWeight:"250gm" },
-{ id:"GS03", name:"Tamarind/ Emli Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🌰", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
-{ id:"GS22", name:"Urid Papad ( 1 Kg )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"400 Lp", bundleSize:"", unitWeight:"1Kg" },
-{ id:"GS30", name:"Urid Papad ( 200 gm )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"85 Lp", bundleSize:"", unitWeight:"200gm" },
-{ id:"GS29", name:"Urid Papad ( 500 gm )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"210 Lp", bundleSize:"", unitWeight:"500gm" },
-{ id:"GS08", name:"Wheat Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"120 Lp", bundleSize:6, unitWeight:"500gm" },
-{ id:"GS34", name:"Wheat Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🍪", image:"", price:"80 Lp", bundleSize:"", unitWeight:"200gm" },
-  // ── BEVERAGES ─────────────────────────────────────────────
-  { id:"BV02", name:"Aloe Vera Juices ( 1000 ml )", category:"Beverages", emoji:"🧃", image:"", price:"120 Lp", bundleSize:"", unitWeight:"1000ml" },
-{ id:"BV01", name:"Amla Juices ( 1000 ml )", category:"Beverages", emoji:"🧃", image:"", price:"120 Lp", bundleSize:"", unitWeight:"1000ml" },
-{ id:"BV03", name:"Sugarcane Vinegar Juices ( 1000 ml )", category:"Beverages", emoji:"🧃", image:"", price:"100 Lp", bundleSize:"", unitWeight:"1000ml" },
-
-  // ── FRUITS & VEGETABLES ───────────────────────────────────
-  { id:"FV01", name:"Mango Pickle ( 70 gm )", category:"Fruits & Vegetables", emoji:"🥭", image:"", price:"180 Lp", bundleSize:6, unitWeight:"70gm" },
-{ id:"FV02", name:"Olive Pickle ( 80 gm )", category:"Fruits & Vegetables", emoji:"🫒", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
-
-  // ── Snacks & Branded Foods─────────────────────────────────
-  { id:"SB11", name:"Almond ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🌰", image:"", price:"240 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"SB01", name:"Awala Barfi ( 500 gm )", category:"Snacks & Branded Foods", emoji:"🍬", image:"", price:"80 Lp", bundleSize:"", unitWeight:"500gm" },
-{ id:"SB10", name:"Cashew Whole ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🌰", image:"", price:"240 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"SB09", name:"Cherry ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🍒", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"SB12", name:"Dates ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🌴", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"SB17", name:"Namkin Snacks ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🍘", image:"", price:"330 Lp", bundleSize:3, unitWeight:"1Packet" },
-{ id:"SB16", name:"Papad ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🫓", image:"", price:"420 Lp", bundleSize:6, unitWeight:"1Packet" },
-{ id:"SB02", name:"Papita Laddo ( 500 gm )", category:"Snacks & Branded Foods", emoji:"🍡", image:"", price:"80 Lp", bundleSize:"", unitWeight:"500gm" },
-{ id:"SB13", name:"Raisin ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🍇", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"SB14", name:"Sweet Snacks ( 1 gm )", category:"Snacks & Branded Foods", emoji:"🍬", image:"", price:"300 Lp", bundleSize:3, unitWeight:"1gm" },
-
- // ── TEXTILE ───────────────────────────────────
-  { id:"SF01", name:"Scrunchie ( 6 piece )", category:"Style & Fashion", emoji:"🎀", image:"", price:"150 Lp", bundleSize:"", unitWeight:"6piece" },
-{ id:"WW03", name:"Long Kurti ( 1 piece )", category:"Women's Wear", emoji:"👗", image:"", price:"450 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"WW01", name:"Short Kurti ( 1 piece )", category:"Women's Wear", emoji:"👚", image:"", price:"370 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"WA01", name:"T-shirts ( 1 piece )", category:"Men's & Women's wear", emoji:"👕", image:"", price:"250 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW01", name:"Men's Long -cream color Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW02", name:"Men's Long -mahenta Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW03", name:"Men's Long -seafoam green Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW04", name:"Men's Long -beige Striped Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW05", name:"Men's Short -beige Striped Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"350 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW06", name:"Men's Short -Magenta Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW07", name:"Men's Short -cream color Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW08", name:"Men's Short -seafoam green Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"WA01", name:"T-shirts ( 1 piece )", category:"Men's & Women's wear", emoji:"👕", image:"", price:"250 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW01", name:"Men's Long -cream color Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW02", name:"Men's Long -mahenta Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW03", name:"Men's Long -seafoam green Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW04", name:"Men's Long -beige Striped Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW05", name:"Men's Short -beige Striped Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"350 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW06", name:"Men's Short -Magenta Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW07", name:"Men's Short -cream color Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"MW08", name:"Men's Short -seafoam green Kurta ( 1 piece )", category:"Men's Wear", emoji:"👔", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
- // ── HOME ASSECCORIES ───────────────────────────────────
-  { id:"HA08", name:"Bread Basket ( 1 piece )", category:"Home Asseccories", emoji:"🧺", image:"", price:"150 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA09", name:"Dream Catcher ( 2 Piece )", category:"Home Asseccories", emoji:"🪶", image:"", price:"250 Lp", bundleSize:"", unitWeight:"2Piece" },
-{ id:"HA12", name:"Floor Mat ( 1 Piece )", category:"Home Asseccories", emoji:"🧶", image:"", price:"2400 Lp", bundleSize:"", unitWeight:"1Piece" },
-{ id:"HA10", name:"Kitchen Napkins ( 4 Piece )", category:"Home Asseccories", emoji:"🍽️", image:"", price:"99 Lp", bundleSize:"", unitWeight:"4Piece" },
-{ id:"HA01", name:"Off white Canvas Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"285 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA02", name:"Jute Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"230 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA03", name:"Canvas Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"350 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA04", name:"canvas with inside pocket Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"350 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA05", name:"Canvas with textile patch Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"280 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA06", name:"Canvas with printed handle Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"225 Lp", bundleSize:"", unitWeight:"1piece" },
-{ id:"HA07", name:"Jute with pompom Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"👜", image:"", price:"150 Lp", bundleSize:"", unitWeight:"1piece" },
-
- // ── POOJA & RELIGIOUS ─────────────────────────────────────
-  { id:"PR09", name:"Agarbatti ( 20 gm )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20gm" },
-{ id:"PR01", name:"Agarbatti ( 20 PC )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20PC" },
-{ id:"PR03", name:"Baily Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
-{ id:"PR16", name:"Belmala ( 1 PC )", category:"Pooja & Religious", emoji:"📿", image:"", price:"66 Lp", bundleSize:12, unitWeight:"1PC" },
-{ id:"PR08", name:"Chandan / Rajanigandha Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
-{ id:"PR14", name:"Chandan Agarbatti ( 1 Packet )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"PR07", name:"Chandan Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
-{ id:"PR17", name:"Cotton Wicks ( 1 Packet )", category:"Pooja & Religious", emoji:"🕯️", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"PR13", name:"Cotton Wicks ( 7 gm )", category:"Pooja & Religious", emoji:"🕯️", image:"", price:"120 Lp", bundleSize:12, unitWeight:"7gm" },
-{ id:"PR15", name:"Jasmine Agarbatti ( 1 Packet )", category:"Pooja & Religious", emoji:"🌸", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
-{ id:"PR11", name:"Jasmine Agarbatti ( 12 Stick )", category:"Pooja & Religious", emoji:"🌸", image:"", price:"120 Lp", bundleSize:12, unitWeight:"12Stick" },
-{ id:"PR10", name:"Jasmine Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🌸", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
-{ id:"PR06", name:"Kasturi/ Musk Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
-{ id:"PR12", name:"Rajanigandha Agarbatti ( 10 Stick )", category:"Pooja & Religious", emoji:"🪔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"10Stick" },
-{ id:"PR04", name:"Rose Agarbatti ( 2 gm )", category:"Pooja & Religious", emoji:"🌹", image:"", price:"600 Lp", bundleSize:12, unitWeight:"2gm" },
+{ id:"BV01", name:"Aloe Vera Juices ( 1000 ml )", category:"Beverages", emoji:"🧼", image:"", price:"120 Lp", bundleSize:"", unitWeight:"1000ml" },
+{ id:"BV02", name:"Amla Juices ( 1000 ml )", category:"Beverages", emoji:"🧼", image:"", price:"120 Lp", bundleSize:"", unitWeight:"1000ml" },
+{ id:"BV03", name:"Sugarcane Vinegar Juices ( 1000 ml )", category:"Beverages", emoji:"🧼", image:"", price:"100 Lp", bundleSize:"", unitWeight:"1000ml" },
+{ id:"GS03", name:"Adauri/Bari Spice ( 200 gm )", category:"Groceries & Staples", emoji:"🧼", image:"", price:"240 Lp", bundleSize:6, unitWeight:"200gm" },
+{ id:"GS04", name:"Bajra Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🧴", image:"", price:"120 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS05", name:"Bajra Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🚽", image:"", price:"160 Lp", bundleSize:2, unitWeight:"200gm" },
+{ id:"GS06", name:"Bengal Black Chana Besan ( 500 gm )", category:"Groceries & Staples", emoji:"🥒", image:"", price:"240 Lp", bundleSize:4, unitWeight:"500gm" },
+{ id:"GS07", name:"Boiled Rice ( 1 Kg )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"195 Lp", bundleSize:3, unitWeight:"1Kg" },
+{ id:"GS08", name:"Chana Sattu ( 500 gm )", category:"Groceries & Staples", emoji:"🫒", image:"", price:"180 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS10", name:"Chilly Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🌰", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
+{ id:"GS11", name:"Golden Green Bayleaf ( 1 Packet )", category:"Groceries & Staples", emoji:"🥕", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
+{ id:"GS13", name:"Green Chilli Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"180 Lp", bundleSize:3, unitWeight:"250gm" },
+{ id:"GS15", name:"Haldi Powder Spice ( 100 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"120 Lp", bundleSize:6, unitWeight:"100gm" },
+{ id:"GS18", name:"Indrayani Rice ( 1 Kg )", category:"Groceries & Staples", emoji:"🌽", image:"", price:"240 Lp", bundleSize:3, unitWeight:"1Kg" },
+{ id:"GS19", name:"Jau Sattu ( 500 gm )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"180 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS20", name:"Jawar Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🫘", image:"", price:"160 Lp", bundleSize:2, unitWeight:"200gm" },
+{ id:"GS21", name:"Jeera Rice ( 1 Kg )", category:"Groceries & Staples", emoji:"🌾", image:"", price:"240 Lp", bundleSize:3, unitWeight:"1Kg" },
+{ id:"GS22", name:"Jwar Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🫘", image:"", price:"150 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS23", name:"Khada Masala Spice ( 100 gm )", category:"Groceries & Staples", emoji:"🌿", image:"", price:"60 Lp", bundleSize:6, unitWeight:"100gm" },
+{ id:"GS28", name:"Lemon Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🧴", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
+{ id:"GS32", name:"Maize Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🧴", image:"", price:"120 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS36", name:"Mango Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🧼", image:"", price:"180 Lp", bundleSize:3, unitWeight:"250gm" },
+{ id:"GS37", name:"Mango Pickle ( 50 gm )", category:"Groceries & Staples", emoji:"🧴", image:"", price:"210 Lp", bundleSize:6, unitWeight:"50gm" },
+{ id:"GS39", name:"Masala Spice ( 9 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"60 Lp", bundleSize:12, unitWeight:"9gm" },
+{ id:"GS40", name:"Mix Veg Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
+{ id:"GS42", name:"Mixed Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🫧", image:"", price:"180 Lp", bundleSize:3, unitWeight:"250gm" },
+{ id:"GS44", name:"Mixed Pickle ( 50 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"180 Lp", bundleSize:6, unitWeight:"50gm" },
+{ id:"GS47", name:"Mushroom Pickle ( 100 gm )", category:"Groceries & Staples", emoji:"🌹", image:"", price:"420 Lp", bundleSize:6, unitWeight:"100gm" },
+{ id:"GS49", name:"Nagli Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🌹", image:"", price:"400 Lp", bundleSize:2, unitWeight:"200gm" },
+{ id:"GS50", name:"Nagli Papad ( 20 PC )", category:"Groceries & Staples", emoji:"🪔", image:"", price:"360 Lp", bundleSize:6, unitWeight:"20PC" },
+{ id:"GS51", name:"Namkin Snacks ( 250 gm )", category:"Groceries & Staples", emoji:"🍚", image:"", price:"300 Lp", bundleSize:6, unitWeight:"250gm" },
+{ id:"GS02", name:"Olive Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🧼", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
+{ id:"GS52", name:"Powder Detergent ( 500 gm )", category:"Groceries & Staples", emoji:"🍚", image:"", price:"160 Lp", bundleSize:4, unitWeight:"500gm" },
+{ id:"GS53", name:"Ragi Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🫧", image:"", price:"180 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS55", name:"Red Mirchi Pickle ( 500 gm )", category:"Groceries & Staples", emoji:"🍄", image:"", price:"400 Lp", bundleSize:2, unitWeight:"500gm" },
+{ id:"GS56", name:"Rice Papad ( 20 PC )", category:"Groceries & Staples", emoji:"🍄", image:"", price:"240 Lp", bundleSize:6, unitWeight:"20PC" },
+{ id:"GS57", name:"Sabji Masala Spice ( 500 gm )", category:"Groceries & Staples", emoji:"🥭", image:"", price:"420 Lp", bundleSize:3, unitWeight:"500gm" },
+{ id:"GS60", name:"Suran/ Jimikand Pickle ( 250 gm )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"300 Lp", bundleSize:3, unitWeight:"250gm" },
+{ id:"GS62", name:"Sweet Snacks ( 250 gm )", category:"Groceries & Staples", emoji:"🫓", image:"", price:"300 Lp", bundleSize:6, unitWeight:"250gm" },
+{ id:"GS63", name:"Tamarind/ Emli Pickle ( 80 gm )", category:"Groceries & Staples", emoji:"🍪", image:"", price:"180 Lp", bundleSize:6, unitWeight:"80gm" },
+{ id:"GS65", name:"Urid Papad ( 200 gm )", category:"Groceries & Staples", emoji:"🍪", image:"", price:"170 Lp", bundleSize:2, unitWeight:"200gm" },
+{ id:"GS67", name:"Wheat Atta ( 500 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"120 Lp", bundleSize:6, unitWeight:"500gm" },
+{ id:"GS68", name:"Wheat Biscuit ( 200 gm )", category:"Groceries & Staples", emoji:"🍋", image:"", price:"160 Lp", bundleSize:2, unitWeight:"200gm" },
+{ id:"HA01", name:"Bread Basket ( 1 piece )", category:"Home Asseccories", emoji:"🫧", image:"", price:"150 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"HA02", name:"Canvas Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"🫧", image:"", price:"350 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"HA06", name:"Dream Catcher ( 2 Piece )", category:"Home Asseccories", emoji:"🧼", image:"", price:"250 Lp", bundleSize:"", unitWeight:"2Piece" },
+{ id:"HA07", name:"Floor Mat ( 1 Piece )", category:"Home Asseccories", emoji:"🧼", image:"", price:"2400 Lp", bundleSize:"", unitWeight:"1Piece" },
+{ id:"HA13", name:"Jute Tote Bag ( 1 piece )", category:"Home Asseccories", emoji:"🪔", image:"", price:"230 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"HA15", name:"Kitchen Napkins ( 4 Piece )", category:"Home Asseccories", emoji:"🧼", image:"", price:"99 Lp", bundleSize:"", unitWeight:"4Piece" },
+{ id:"HC01", name:"Citronella Phenyl ( 500 ml )", category:"Household & Cleaning", emoji:"🪔", image:"", price:"120 Lp", bundleSize:4, unitWeight:"500ml" },
+{ id:"HC02", name:"Floor Cleaner ( 1 Liters )", category:"Household & Cleaning", emoji:"🧼", image:"", price:"150 Lp", bundleSize:3, unitWeight:"1Liters" },
+{ id:"HC04", name:"Green Phenyl ( 500 ml )", category:"Household & Cleaning", emoji:"🌸", image:"", price:"200 Lp", bundleSize:4, unitWeight:"500ml" },
+{ id:"HC08", name:"Lemon Detergent ( 500 gm )", category:"Household & Cleaning", emoji:"🥒", image:"", price:"200 Lp", bundleSize:4, unitWeight:"500gm" },
+{ id:"HC12", name:"Lemon Liquid Dishwash ( 250 ml )", category:"Household & Cleaning", emoji:"🥒", image:"", price:"200 Lp", bundleSize:4, unitWeight:"250ml" },
+{ id:"HC18", name:"Lemon Tub Dishwash ( 250 gm )", category:"Household & Cleaning", emoji:"🧄", image:"", price:"80 Lp", bundleSize:4, unitWeight:"250gm" },
+{ id:"HC34", name:"Toilet Cleaner ( 500 ml )", category:"Household & Cleaning", emoji:"🌶️", image:"", price:"280 Lp", bundleSize:4, unitWeight:"500ml" },
+{ id:"HC35", name:"White Phenyl ( 500 ml )", category:"Household & Cleaning", emoji:"🍘", image:"", price:"160 Lp", bundleSize:4, unitWeight:"500ml" },
+{ id:"KW01", name:"Kids Maharashtrian Nauwari Saree ( 1 Piece )", category:"Kids Ware", emoji:"🌽", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
+{ id:"WA01", name:"T-shirts ( 1 piece )", category:"Men's & Women's wear", emoji:"🪔", image:"", price:"250 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW01", name:"Men's Long -beige Striped Kurta ( 1 piece )", category:"Men's Wear", emoji:"🌿", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW02", name:"Men's Long -cream color Kurta ( 1 piece )", category:"Men's Wear", emoji:"🌶️", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW03", name:"Men's Long -mahenta Kurta ( 1 piece )", category:"Men's Wear", emoji:"🕯️", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW04", name:"Men's Long -seafoam green Kurta ( 1 piece )", category:"Men's Wear", emoji:"🧴", image:"", price:"790 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW05", name:"Men's Short -beige Striped Kurta ( 1 piece )", category:"Men's Wear", emoji:"🌿", image:"", price:"350 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW06", name:"Men's Short -cream color Kurta ( 1 piece )", category:"Men's Wear", emoji:"🫧", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW07", name:"Men's Short -Magenta Kurta ( 1 piece )", category:"Men's Wear", emoji:"🌶️", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"MW08", name:"Men's Short -seafoam green Kurta ( 1 piece )", category:"Men's Wear", emoji:"🫧", image:"", price:"640 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"PC02", name:"Aloe Vera Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
+{ id:"PC05", name:"Chandan Bath Soap ( 20 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"100 Lp", bundleSize:4, unitWeight:"20gm" },
+{ id:"PC08", name:"Charcoal Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🫧", image:"", price:"120 Lp", bundleSize:4, unitWeight:"50gm" },
+{ id:"PC10", name:"Haldi Bath Soap ( 20 gm )", category:"Personal Care", emoji:"🪔", image:"", price:"100 Lp", bundleSize:4, unitWeight:"20gm" },
+{ id:"PC11", name:"Hankey ( 4 Piece )", category:"Personal Care", emoji:"🌸", image:"", price:"145 Lp", bundleSize:"", unitWeight:"4Piece" },
+{ id:"PC12", name:"Lemon Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧼", image:"", price:"120 Lp", bundleSize:4, unitWeight:"75gm" },
+{ id:"PC13", name:"Lemongrass Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🧴", image:"", price:"160 Lp", bundleSize:4, unitWeight:"75gm" },
+{ id:"PC14", name:"Multani Mitti Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🍪", image:"", price:"120 Lp", bundleSize:4, unitWeight:"50gm" },
+{ id:"PC19", name:"Neem Bath Soap ( 75 gm )", category:"Personal Care", emoji:"🌰", image:"", price:"100 Lp", bundleSize:4, unitWeight:"75gm" },
+{ id:"PC24", name:"Rose Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🌴", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
+{ id:"PC26", name:"Turmeric & Honey Bath Soap ( 50 gm )", category:"Personal Care", emoji:"🍬", image:"", price:"120 Lp", bundleSize:4, unitWeight:"50gm" },
+{ id:"PC28", name:"Turmeric Bath Soap ( 50 gm )", category:"Personal Care", emoji:"📿", image:"", price:"80 Lp", bundleSize:4, unitWeight:"50gm" },
+{ id:"PR04", name:"Baily Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🍘", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
+{ id:"PR05", name:"Belmala ( 1 PC )", category:"Pooja & Religious", emoji:"🧼", image:"", price:"66 Lp", bundleSize:12, unitWeight:"1PC" },
+{ id:"PR06", name:"Chandan / Rajanigandha Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🍘", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
+{ id:"PR10", name:"Cotton Wicks ( 7 gm )", category:"Pooja & Religious", emoji:"👜", image:"", price:"120 Lp", bundleSize:12, unitWeight:"7gm" },
+{ id:"PR13", name:"Jasmine Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"👜", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
+{ id:"PR14", name:"Kasturi/ Musk Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"👜", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
+{ id:"PR15", name:"Miri Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"👜", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
+{ id:"PR18", name:"Rose Agarbatti ( 20 Stick )", category:"Pooja & Religious", emoji:"🎀", image:"", price:"120 Lp", bundleSize:12, unitWeight:"20Stick" },
+{ id:"SB01", name:"Almond ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"👚", image:"", price:"240 Lp", bundleSize:12, unitWeight:"1Packet" },
+{ id:"SB02", name:"Awala Barfi ( 500 gm )", category:"Snacks & Branded Foods", emoji:"👚", image:"", price:"160 Lp", bundleSize:2, unitWeight:"500gm" },
+{ id:"SB03", name:"Cashew Whole ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"👗", image:"", price:"240 Lp", bundleSize:12, unitWeight:"1Packet" },
+{ id:"SB04", name:"Cherry ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"👗", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
+{ id:"SB06", name:"Dates ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"👔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
+{ id:"SB07", name:"Namkin Snacks ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"👔", image:"", price:"330 Lp", bundleSize:3, unitWeight:"1Packet" },
+{ id:"SB10", name:"Papita Laddo ( 500 gm )", category:"Snacks & Branded Foods", emoji:"👔", image:"", price:"160 Lp", bundleSize:2, unitWeight:"500gm" },
+{ id:"SB11", name:"Raisin ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"👔", image:"", price:"120 Lp", bundleSize:12, unitWeight:"1Packet" },
+{ id:"SF01", name:"Scrunchie ( 6 piece )", category:"Style & Fashion", emoji:"🥻", image:"", price:"150 Lp", bundleSize:"", unitWeight:"6piece" },
+{ id:"WW01", name:"Lacha ( 1 Piece )", category:"Women's Wear", emoji:"👖", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
+{ id:"WW02", name:"Long Kurti ( 1 piece )", category:"Women's Wear", emoji:"👖", image:"", price:"450 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"WW05", name:"Plazo ( 1 Piece )", category:"Women's Wear", emoji:"🧶", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
+{ id:"WW06", name:"Short Kurti ( 1 piece )", category:"Women's Wear", emoji:"🧶", image:"", price:"370 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"WW08", name:"South Indian Lehanga ( 1 Piece )", category:"Women's Wear", emoji:"🧶", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
+{ id:"WW09", name:"Women Maharashtrian Nauwari Saree ( 1 Piece )", category:"Women's Wear", emoji:"🧶", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
 
 ];
 /* ================================================================
@@ -1103,12 +1022,11 @@ function renderGrid() {
       bundleHTML = `<div class="card-price">${product.price}</div>`;
     }
 
-    // Qty display: show "N pack(s)" and total units if bundle
-    const packCount = qty;
-    const totalUnits = bundleSize ? qty * bundleSize : null;
-    const qtyInnerHTML = bundleSize
-      ? `<span class="qty-packs">${packCount} pack${packCount !== 1 ? "s" : ""}</span><span class="qty-units">${totalUnits} units</span>`
-      : `<span class="qty-packs">${packCount}</span>`;
+    // Build dropdown options (moq → 50)
+    let optionsHTML = "";
+    for (let v = moq; v <= 50; v++) {
+      optionsHTML += `<option value="${v}"${v === qty ? " selected" : ""}>${v} pack${v !== 1 ? "s" : ""}</option>`;
+    }
 
     const card = document.createElement("div");
     card.className = "product-card" + (isSelected ? " selected" : "");
@@ -1126,10 +1044,13 @@ function renderGrid() {
         <div class="card-name">${product.name}</div>
         <div class="card-cat">${product.category}</div>
         ${bundleHTML}
-        <div class="qty-controls" style="display:${isSelected ? 'flex' : 'none'}">
-          <button class="qty-btn" data-action="dec" data-id="${product.id}" data-moq="${moq}">−</button>
-          <div class="qty-display" id="qty-${product.id}" data-id="${product.id}" data-bundle="${bundleSize||''}">${qtyInnerHTML}</div>
-          <button class="qty-btn" data-action="inc" data-id="${product.id}">+</button>
+        <div class="qty-controls" style="display:${isSelected ? 'flex' : 'none'}; flex-direction:column; align-items:flex-start; gap:2px;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            <button class="qty-btn" data-action="dec" data-id="${product.id}" data-moq="${moq}">−</button>
+            <select class="qty-select" id="qty-${product.id}" data-id="${product.id}">${optionsHTML}</select>
+            <button class="qty-btn" data-action="inc" data-id="${product.id}" data-moq="${moq}">+</button>
+          </div>
+          ${bundleSize ? `<span class="qty-units-label" id="qty-units-${product.id}">${qty * bundleSize} units</span>` : `<span class="qty-units-label" id="qty-units-${product.id}"></span>`}
         </div>
       </div>`;
 
@@ -1143,17 +1064,30 @@ function renderGrid() {
    CARD CLICK EVENTS — select/deselect & quantity
 ================================================================ */
 
-// Helper: refresh the qty-display inner HTML for a product
+// Helper: build option list string for a select (moq to 50)
+function buildOptions(moq, selected) {
+  let html = "";
+  for (let v = moq; v <= 50; v++) {
+    html += `<option value="${v}"${v === selected ? " selected" : ""}>${v} pack${v !== 1 ? "s" : ""}</option>`;
+  }
+  return html;
+}
+
+// Helper: refresh the qty-select for a product
 function refreshQtyDisplay(id, qty) {
-  const el = document.getElementById("qty-" + id);
-  if (!el) return;
-  const product = PRODUCTS.find(p => p.id === id);
+  const sel = document.getElementById("qty-" + id);
+  if (!sel) return;
+  const product    = PRODUCTS.find(p => p.id === id);
   const bundleSize = product && product.bundleSize ? product.bundleSize : null;
-  if (bundleSize) {
-    const totalUnits = qty * bundleSize;
-    el.innerHTML = `<span class="qty-packs">${qty} pack${qty !== 1 ? "s" : ""}</span><span class="qty-units">${totalUnits} units</span>`;
-  } else {
-    el.innerHTML = `<span class="qty-packs">${qty}</span>`;
+  const moq        = (product && product.moq) ? product.moq : 1;
+
+  // Rebuild options so selected value is correct
+  sel.innerHTML = buildOptions(moq, qty);
+
+  // Update units label beneath the select
+  const label = document.getElementById("qty-units-" + id);
+  if (label) {
+    label.textContent = bundleSize ? `${qty * bundleSize} units` : "";
   }
 }
 
@@ -1162,7 +1096,7 @@ function attachCardListeners() {
 
   grid.querySelectorAll(".product-card").forEach(card => {
     card.addEventListener("click", e => {
-      if (e.target.closest(".qty-btn") || e.target.closest(".qty-display")) return;
+      if (e.target.closest(".qty-btn") || e.target.closest(".qty-select")) return;
 
       const id  = card.dataset.id;
       const moq = parseInt(card.dataset.moq) || 1;
@@ -1175,8 +1109,7 @@ function attachCardListeners() {
         state[id] = moq;
         card.classList.add("selected");
         card.querySelector(".qty-controls").style.display = "flex";
-        refreshQtyDisplay(id, moq);
-      }
+        refreshQtyDisplay(id, moq);      }
       updateSummary();
     });
   });
@@ -1192,7 +1125,7 @@ function attachCardListeners() {
       if (!state[id]) state[id] = moq;
 
       if (action === "inc") {
-        state[id]++;
+        state[id] = Math.min(50, state[id] + 1);
       } else if (action === "dec") {
         state[id] = Math.max(moq, state[id] - 1);
       }
@@ -1202,58 +1135,21 @@ function attachCardListeners() {
     });
   });
 
-  // Scroll on qty-display to change quantity
-  grid.querySelectorAll(".qty-display").forEach(el => {
-    // Mouse wheel
-    el.addEventListener("wheel", e => {
-      e.preventDefault();
+  // Dropdown select change
+  grid.querySelectorAll(".qty-select").forEach(sel => {
+    sel.addEventListener("change", e => {
       e.stopPropagation();
-      const id  = el.dataset.id;
-      const card = el.closest(".product-card");
-      const moq  = parseInt(card && card.dataset.moq) || 1;
-
-      if (!state[id]) state[id] = moq;
-
-      // Scroll up = increase, scroll down = decrease
-      if (e.deltaY < 0) {
-        state[id]++;
-      } else {
-        state[id] = Math.max(moq, state[id] - 1);
+      const id  = sel.dataset.id;
+      const val = parseInt(sel.value);
+      if (!isNaN(val)) {
+        state[id] = val;
+        refreshQtyDisplay(id, val);
+        updateSummary();
       }
+    });
 
-      refreshQtyDisplay(id, state[id]);
-      updateSummary();
-    }, { passive: false });
-
-    // Touch scroll (swipe up/down on qty display)
-    let touchStartY = null;
-    el.addEventListener("touchstart", e => {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    el.addEventListener("touchmove", e => {
-      e.preventDefault();
-      if (touchStartY === null) return;
-      const delta = touchStartY - e.touches[0].clientY;
-      if (Math.abs(delta) < 10) return;
-
-      const id  = el.dataset.id;
-      const card = el.closest(".product-card");
-      const moq  = parseInt(card && card.dataset.moq) || 1;
-      if (!state[id]) state[id] = moq;
-
-      if (delta > 0) {
-        state[id]++;
-      } else {
-        state[id] = Math.max(moq, state[id] - 1);
-      }
-
-      refreshQtyDisplay(id, state[id]);
-      updateSummary();
-      touchStartY = e.touches[0].clientY;
-    }, { passive: false });
-
-    el.addEventListener("touchend", () => { touchStartY = null; });
+    // Prevent card toggle when clicking the select
+    sel.addEventListener("click", e => e.stopPropagation());
   });
 }
 
