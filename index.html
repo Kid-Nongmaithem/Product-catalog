@@ -661,8 +661,8 @@
     </div>
     <div>
       <label for="emp-code">Employee Code <span class="req">*</span></label>
-      <input type="text" id="emp-code" placeholder="e.g. DF893" />
-      <div class="error-msg" id="err-code">Code is required.</div>
+<input type="text" id="emp-code" placeholder="e.g. DF893" />
+<div class="error-msg" id="err-code">Must start with a letter followed by numbers (e.g. DF123).</div>
     </div>
     <div>
       <label for="emp-phone">Phone Number</label>
@@ -670,7 +670,7 @@
       <div class="error-msg" id="err-phone">Enter a valid number.</div>
     </div>
     <div class="full">
-      <label for="emp-pin">PIN Code / Location</label>
+      <label for="emp-pin">PIN Code / Location <span class="req">*</span></label>
       <input type="text" id="emp-pin" placeholder="e.g. 560001" maxlength="10" />
       <div class="error-msg" id="err-pin">Enter a valid PIN code.</div>
     </div>
@@ -902,15 +902,18 @@ const PRODUCTS = [
 { id:"SB07", name:"Namkin Snacks ( 1 Packet )", category:"Snacks & Branded Foods", emoji:"🍟", image:"", price:"330 Lp", bundleSize:3, unitWeight:"1Packet" },
 { id:"SB10", name:"Papita Laddo ( 500 gm )", category:"Snacks & Branded Foods", emoji:"🍊", image:"", price:"160 Lp", bundleSize:2, unitWeight:"500gm" },
 { id:"SF01", name:"Scrunchie ( 6 piece )", category:"Apparel", emoji:"🎀", image:"", price:"150 Lp", bundleSize:"", unitWeight:"6piece" },
+{ id:"WW01", name:"Lacha ( 1 Piece )", category:"Apparel", emoji:"🧣", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
 { id:"WW02", name:"Long Kurti ( 1 piece )", category:"Apparel", emoji:"👗", image:"", price:"450 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"WW05", name:"Plazo ( 1 Piece )", category:"Apparel", emoji:"👖", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
 { id:"WW06", name:"Short Kurti ( 1 piece )", category:"Apparel", emoji:"👚", image:"", price:"370 Lp", bundleSize:"", unitWeight:"1piece" },
+{ id:"WW08", name:"South Indian Lehanga ( 1 Piece )", category:"Apparel", emoji:"💃", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
+{ id:"WW09", name:"Women Maharashtrian Nauwari Saree ( 1 Piece )", category:"Apparel", emoji:"🥻", image:"", price:" Lp", bundleSize:"", unitWeight:"1Piece" },
 { id:"BV04", name:"Tea ( 250 gm )", category:"Beverages", emoji:"🍵", image:"", price:"200 Lp", bundleSize:2, unitWeight:"250gm" },
 { id:"SB19", name:"Kaju/ Cashew ( 250 gm )", category:"Snacks & Branded Foods", emoji:"🥜", image:"", price:"250 Lp", bundleSize:"", unitWeight:"250gm" },
 { id:"SB20", name:"Badam/ Almond ( 250 gm )", category:"Snacks & Branded Foods", emoji:"🌰", image:"", price:"250 Lp", bundleSize:"", unitWeight:"250gm" },
 { id:"SB21", name:"Raisin/ Kismis ( 250 gm )", category:"Snacks & Branded Foods", emoji:"🍇", image:"", price:"150 Lp", bundleSize:"", unitWeight:"250gm" },
 { id:"GS69", name:"Red chilli powder Spice ( 100 gm )", category:"Groceries & Staples", emoji:"🌶️", image:"", price:"120 Lp", bundleSize:2, unitWeight:"100gm" },
 { id:"GS70", name:"Dhaniya Powder Spice ( 100 gm )", category:"Groceries & Staples", emoji:"🍀", image:"", price:"120 Lp", bundleSize:2, unitWeight:"100gm" },
-
 ];
 /* ================================================================
    STATE — tracks which products are selected and their quantities
@@ -1283,9 +1286,9 @@ function validateForm() {
   const pin   = document.getElementById("emp-pin").value.trim();
 
   setError("emp-name",  "err-name",  !name);
-  setError("emp-code",  "err-code",  !code);
+  setError("emp-code", "err-code", !code || !/^[A-Za-z][A-Za-z0-9]*\d+$/.test(code));
   setError("emp-phone", "err-phone", phone && !/^\d{7,15}$/.test(phone));
-  setError("emp-pin",   "err-pin",   pin   && !/^\d{4,10}$/.test(pin));
+  setError("emp-pin",  "err-pin",  !pin || !/^\d{4,10}$/.test(pin));
 
   return valid;
 }
